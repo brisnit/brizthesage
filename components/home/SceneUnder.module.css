@@ -1,0 +1,587 @@
+.under {
+  position: relative;
+  overflow: hidden;
+  /* Top colour matches the hole we just fell through. */
+  background:
+    radial-gradient(ellipse 60% 20% at 50% 100%, rgba(224, 162, 58, 0.35), transparent),
+    linear-gradient(
+      to bottom,
+      #120d1c 0%,
+      #21151f 8%,
+      #2c1d22 24%,
+      #261a26 42%,
+      #1c1628 60%,
+      #141430 78%,
+      #120d1c 100%
+    );
+  outline: none;
+}
+
+/* Soil texture: wavy strata lines + specks, cheap repeating gradients */
+.under::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle at 20% 30%, rgba(243, 231, 204, 0.06) 0 2px, transparent 3px),
+    radial-gradient(circle at 70% 60%, rgba(243, 231, 204, 0.05) 0 1.5px, transparent 2.5px),
+    repeating-linear-gradient(178deg, rgba(0, 0, 0, 0) 0 120px, rgba(0, 0, 0, 0.18) 120px 126px, rgba(0, 0, 0, 0) 126px 260px);
+  background-size: 90px 90px, 70px 70px, 100% 100%;
+  pointer-events: none;
+}
+
+.strata {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.strata svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.ceiling {
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 120px;
+}
+.ceiling svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.artifact {
+  width: clamp(56px, 7vw, 110px);
+  opacity: 0.92;
+  pointer-events: none;
+}
+.artifact svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.artBone {
+  left: 70%;
+  top: 70%;
+}
+.artGear {
+  left: 30%;
+  top: 80%;
+}
+.artMic {
+  left: 6%;
+  top: 8%;
+}
+.artFish {
+  left: 38%;
+  top: 48%;
+  width: clamp(80px, 10vw, 150px);
+}
+.artCassette {
+  left: 80%;
+  top: 46%;
+}
+.artHeadphones {
+  left: 40%;
+  top: 6%;
+}
+.artBottle {
+  left: 86%;
+  top: 74%;
+}
+.artWatch {
+  left: 60%;
+  top: 80%;
+}
+.shroomsEntry {
+  right: 18%;
+  bottom: 4%;
+  width: min(16vw, 180px);
+}
+.shroomsEntry svg,
+.shroomsMid svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.shroomsMid {
+  left: 56%;
+  top: 30%;
+  width: min(14vw, 150px);
+}
+
+.block {
+  position: relative;
+  min-height: 105svh;
+  padding: 0 clamp(16px, 4vw, 48px);
+}
+.block > * {
+  position: absolute;
+}
+
+.beam {
+  left: 50%;
+  top: 20px;
+  width: min(70vw, 620px);
+  height: 80%;
+  translate: -50% 0;
+  background: linear-gradient(to bottom, rgba(154, 219, 208, 0.45), rgba(154, 219, 208, 0));
+  clip-path: polygon(36% 0, 64% 0, 100% 100%, 0 100%);
+  pointer-events: none;
+}
+
+.rootsL,
+.rootsR,
+.rootsTop {
+  top: 0;
+}
+.rootsL {
+  left: -2vw;
+  width: min(46vw, 560px);
+}
+.rootsR {
+  right: -4vw;
+  width: min(42vw, 520px);
+  opacity: 0.7;
+}
+.rootsTop {
+  left: 30%;
+  width: min(50vw, 560px);
+  opacity: 0.55;
+}
+.rootsL svg,
+.rootsR svg,
+.rootsTop svg,
+.stonesFar svg,
+.stonesMid svg,
+.stonesLow svg,
+.records svg,
+.shroomsL svg,
+.shroomsR svg,
+.chamberArt svg,
+.chamberSkeleton svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.stonesFar {
+  left: 5%;
+  bottom: 6%;
+  width: min(60vw, 640px);
+  opacity: 0.6;
+}
+.stonesMid {
+  right: 2%;
+  top: 4%;
+  width: min(40vw, 420px);
+  opacity: 0.5;
+}
+.stonesLow {
+  left: 30%;
+  bottom: 2%;
+  width: min(50vw, 520px);
+  opacity: 0.55;
+}
+
+.entryText {
+  position: relative !important;
+  z-index: 2;
+  max-width: 34rem;
+  margin: 0 auto;
+  padding-top: 26svh;
+  text-align: center;
+}
+.underTitle {
+  font-size: clamp(2.2rem, 6vw, 4.2rem);
+  font-weight: 800;
+  color: var(--teal-300);
+  text-shadow: 3px 3px 0 var(--line), 0 0 30px rgba(79, 179, 169, 0.45);
+}
+.intro {
+  margin-top: 10px;
+  font-size: clamp(1.05rem, 2vw, 1.3rem);
+  color: var(--parchment);
+}
+
+.depth {
+  display: inline-block;
+  font-family: var(--font-hand);
+  font-size: 1.35rem;
+  color: var(--ochre-300);
+  padding: 2px 12px;
+  border: 2px dashed rgba(244, 207, 114, 0.6);
+  border-radius: 8px;
+  rotate: -3deg;
+  margin-bottom: 14px;
+}
+.depthSide {
+  left: clamp(16px, 4vw, 48px);
+  top: 4%;
+}
+.depthRight {
+  right: clamp(16px, 4vw, 48px);
+  top: 4%;
+}
+.depthCenter {
+  left: 50%;
+  top: 4%;
+  translate: -50% 0;
+  white-space: nowrap;
+}
+
+.scrap {
+  z-index: 3;
+  padding: 10px 16px 12px;
+  background: linear-gradient(170deg, #f7eed8, #e2d0a8);
+  color: var(--plum-950);
+  font-family: var(--font-hand);
+  font-size: clamp(1.15rem, 2vw, 1.5rem);
+  line-height: 1.1;
+  border: 1.5px solid rgba(26, 16, 34, 0.6);
+  clip-path: polygon(0 6%, 8% 0, 30% 4%, 55% 0, 78% 5%, 100% 0, 97% 52%, 100% 100%, 70% 95%, 40% 100%, 12% 94%, 2% 100%);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+  pointer-events: none;
+}
+.scrapA {
+  left: 8%;
+  top: 62%;
+  rotate: -8deg;
+}
+.scrapB {
+  left: 52%;
+  top: 72%;
+  rotate: 6deg;
+}
+.scrapC {
+  right: 8%;
+  top: 22%;
+  rotate: 7deg;
+}
+.scrapD {
+  left: 48%;
+  top: 80%;
+  rotate: -5deg;
+}
+
+.records {
+  left: 55%;
+  top: 22%;
+  width: min(36vw, 420px);
+  z-index: 2;
+}
+.relicRecord {
+  position: absolute;
+  left: 38%;
+  top: -32%;
+}
+.spinning svg {
+  animation: spin 3.5s linear infinite;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.shroomsR {
+  right: 4%;
+  bottom: 6%;
+  width: min(22vw, 240px);
+}
+.shroomsL {
+  left: 3%;
+  bottom: 8%;
+  width: min(22vw, 240px);
+}
+
+/* ---------- Discoveries ---------- */
+.find {
+  left: calc(var(--x) * 1%);
+  top: calc(var(--y) * 1%);
+  width: calc(var(--w) * 1%);
+  min-width: 64px;
+  z-index: 4;
+}
+.findButton {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  transition: transform 0.3s var(--ease-out), filter 0.3s;
+}
+.findButton svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.findButton:hover,
+.findButton:focus-visible {
+  transform: scale(1.06) rotate(-2deg);
+  filter: drop-shadow(0 0 10px rgba(255, 217, 138, 0.7));
+}
+.tidbit {
+  position: absolute;
+  left: 50%;
+  top: calc(100% + 10px);
+  translate: -50% 0;
+  width: max-content;
+  max-width: min(260px, 70vw);
+  padding: 10px 14px;
+  background: var(--parchment);
+  color: var(--plum-950);
+  border: 2.5px solid var(--line);
+  border-radius: 14px 18px 12px 16px;
+  font-family: var(--font-hand);
+  font-size: 1.3rem;
+  line-height: 1.15;
+  box-shadow: var(--shadow-soft);
+  animation: tidbitIn 0.4s var(--ease-out);
+  z-index: 5;
+}
+.tidbit[hidden] {
+  display: none;
+}
+@keyframes tidbitIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.95);
+  }
+}
+.sample {
+  margin-bottom: 4px;
+  color: var(--coral-600);
+}
+
+/* Tiny door (HTML so it can swing open in 3D) */
+.door {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 4.4;
+  border: 3px solid var(--line);
+  border-radius: 50% 50% 6px 6px / 36% 36% 6px 6px;
+  background: #0f0a12;
+  perspective: 300px;
+  box-shadow: 0 0 0 5px #8f6444, 0 0 0 8px var(--line);
+}
+.doorLight {
+  position: absolute;
+  inset: 6px;
+  border-radius: inherit;
+  background: radial-gradient(circle at 50% 70%, #fff1c4, #e0a23a 60%, transparent 90%);
+  opacity: 0.85;
+}
+.doorPanel {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: repeating-linear-gradient(90deg, #a8562f 0 22%, #8a4426 22% 25%);
+  border: 2px solid var(--line);
+  transform-origin: 0 50%;
+  transition: transform 0.6s var(--ease-out);
+}
+.knob {
+  position: absolute;
+  right: 14%;
+  top: 56%;
+  width: 16%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--ochre-300);
+  border: 2px solid var(--line);
+}
+.find[data-open="true"] .doorPanel,
+.findButton:hover .doorPanel {
+  transform: rotateY(-62deg);
+}
+.find[data-open="true"] .doorPanel {
+  transform: rotateY(-100deg);
+}
+
+/* Creatures peek up when visited */
+.find :global(.tunnel-creature) {
+  transform: translateY(26px);
+  transition: transform 0.5s var(--ease-out);
+  animation: peekUp 7s ease-in-out infinite;
+}
+.find[data-open="true"] :global(.tunnel-creature),
+.findButton:hover :global(.tunnel-creature) {
+  animation: none;
+  transform: translateY(0);
+}
+@keyframes peekUp {
+  0%,
+  70%,
+  100% {
+    transform: translateY(26px);
+  }
+  78%,
+  90% {
+    transform: translateY(6px);
+  }
+}
+
+/* ---------- Sanctuary ---------- */
+.sanctuary {
+  min-height: 112svh;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+.chamberArt {
+  left: 50%;
+  bottom: 0;
+  width: min(1100px, 150vw);
+  translate: -50% 0;
+}
+.chamberSkeleton {
+  right: max(4vw, calc(50% - 520px));
+  bottom: 8%;
+  width: clamp(90px, 12vw, 150px);
+  z-index: 2;
+}
+.chamberText {
+  position: relative !important;
+  z-index: 3;
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  max-width: 40rem;
+  margin-bottom: max(26svh, 200px);
+  padding: 24px 20px;
+  text-align: center;
+}
+.chamberTitle {
+  font-size: clamp(2.1rem, 5.6vw, 4rem);
+  font-weight: 850;
+  color: var(--parchment);
+  text-shadow: 3px 3px 0 var(--line), 0 0 34px rgba(224, 162, 58, 0.6);
+}
+.chamberLine {
+  font-size: clamp(1.05rem, 2vw, 1.3rem);
+  color: var(--parchment);
+  text-shadow: 1px 1px 0 var(--line);
+}
+.chamberActions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 8px;
+}
+.bigCta {
+  font-size: 1.25rem !important;
+  min-height: 58px !important;
+  padding-inline: 1.6em !important;
+}
+.archDoor {
+  border-radius: 999px 999px 10px 10px / 70% 70% 10px 10px !important;
+}
+.chamberActions :global(.btn-ghost) {
+  background: rgba(18, 10, 25, 0.55);
+}
+.balloon {
+  display: inline-block;
+  width: 14px;
+  height: 18px;
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  background: var(--coral-500);
+  border: 2px solid currentColor;
+  position: relative;
+}
+.balloon::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  width: 1.5px;
+  height: 8px;
+  background: currentColor;
+}
+
+/* ---------- Phones ---------- */
+@media (max-width: 699px) {
+  .find {
+    left: calc(var(--mx) * 1%);
+    top: calc(var(--my) * 1%);
+    width: calc(var(--mw) * 1%);
+  }
+  .records {
+    left: 30%;
+    top: 14%;
+    width: 68vw;
+  }
+  .relicRecord {
+    left: 40%;
+    top: -28%;
+  }
+  .scrapA {
+    left: 6%;
+    top: 74%;
+  }
+  .scrapB {
+    left: 10%;
+    top: 84%;
+  }
+  .scrapC {
+    right: 6%;
+    top: 30%;
+  }
+  .scrapD {
+    left: 30%;
+    top: 88%;
+  }
+  .shroomsR,
+  .shroomsL {
+    width: 36vw;
+  }
+  .rootsL {
+    width: 70vw;
+  }
+  .rootsR {
+    width: 60vw;
+  }
+  .artifact {
+    width: 16vw;
+  }
+  .artFish {
+    width: 22vw;
+    left: 4%;
+    top: 52%;
+  }
+  .artCassette {
+    left: 76%;
+    top: 84%;
+  }
+  .artHeadphones {
+    left: 70%;
+    top: 4%;
+  }
+  .artWatch {
+    left: 78%;
+    top: 26%;
+  }
+  .shroomsMid {
+    left: 36%;
+    top: 38%;
+    width: 28vw;
+  }
+  .shroomsEntry {
+    width: 30vw;
+    right: 6%;
+  }
+  .chamberSkeleton {
+    right: 2vw;
+    bottom: 4%;
+    width: 22vw;
+  }
+  .chamberText {
+    margin-bottom: max(30svh, 210px);
+  }
+  .tidbit {
+    font-size: 1.15rem;
+  }
+}

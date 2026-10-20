@@ -1,0 +1,524 @@
+.outside {
+  position: relative;
+  background: var(--plum-950);
+}
+
+.stage {
+  position: relative;
+  height: 100svh;
+  min-height: 540px;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.stage > * {
+  position: absolute;
+}
+
+.sky {
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    #140b1d 0%,
+    #24132e 26%,
+    #4a2741 48%,
+    #8b4f5a 64%,
+    #c98a6a 76%,
+    #e2b27c 84%,
+    #3a2238 84.5%,
+    #241a33 100%
+  );
+}
+
+.stars {
+  inset: 0 0 35% 0;
+}
+.stars svg {
+  width: 100%;
+  height: 100%;
+}
+
+.planet {
+  width: clamp(48px, 7vw, 110px);
+  left: 11vw;
+  top: calc(var(--nav-h) + 4svh);
+}
+
+.moon {
+  --moon: min(78svh, 92vw);
+  width: var(--moon);
+  aspect-ratio: 1;
+  left: 0;
+  right: 0;
+  margin-inline: auto;
+  top: 8svh;
+}
+.moon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.smallMoon {
+  left: 50%;
+  margin-left: calc(min(78svh, 92vw) * 0.36);
+  top: calc(var(--nav-h) + 3svh);
+  z-index: 4;
+}
+.smallMoonDrift {
+  animation: smallMoonDrift 9s ease-in-out infinite alternate;
+}
+@keyframes smallMoonDrift {
+  0% {
+    transform: translate(-14px, 6px) rotate(-10deg);
+  }
+  100% {
+    transform: translate(10px, -8px) rotate(8deg);
+  }
+}
+
+.cloudBackL,
+.cloudBackR,
+.cloudL,
+.cloudR {
+  width: clamp(220px, 32vw, 520px);
+}
+.cloudBackL svg,
+.cloudBackR svg,
+.cloudL svg,
+.cloudR svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.cloudBackL {
+  left: -6vw;
+  top: 44svh;
+  opacity: 0.85;
+  width: clamp(200px, 26vw, 420px);
+}
+.cloudBackR {
+  right: -5vw;
+  top: 50svh;
+  opacity: 0.85;
+  width: clamp(200px, 26vw, 420px);
+}
+.cloudL {
+  left: -3vw;
+  top: 17svh;
+  z-index: 3;
+}
+.cloudR {
+  right: -4vw;
+  top: 30svh;
+  z-index: 3;
+}
+.cloudBackL > svg,
+.cloudL > svg {
+  animation: cloudDrift 16s ease-in-out infinite alternate;
+}
+.cloudBackR > svg,
+.cloudR > svg {
+  animation: cloudDriftR 19s ease-in-out infinite alternate;
+}
+@keyframes cloudDrift {
+  0% {
+    translate: -14px 0;
+  }
+  100% {
+    translate: 18px -6px;
+  }
+}
+@keyframes cloudDriftR {
+  0% {
+    translate: 12px 0;
+  }
+  100% {
+    translate: -20px 6px;
+  }
+}
+
+.mtnL,
+.mtnR {
+  bottom: 15.5svh;
+  width: 34vw;
+  height: 26svh;
+}
+.mtnL svg,
+.mtnR svg {
+  width: 100%;
+  height: 100%;
+}
+.mtnL {
+  left: -2vw;
+}
+.mtnR {
+  right: -2vw;
+}
+
+.sea {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 16svh;
+  background: linear-gradient(to bottom, #2c2140, #160f22);
+  border-top: 3px solid var(--line);
+}
+
+.house {
+  --house-w: min(94vw, 68svh);
+  width: var(--house-w);
+  aspect-ratio: 700 / 620;
+  left: 0;
+  right: 0;
+  margin-inline: auto;
+  bottom: -3svh;
+  z-index: 2;
+  transform-origin: 58.9% 75.8%;
+}
+.houseArt {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.doorGlow {
+  left: 40%;
+  top: 52%;
+  width: 38%;
+  height: 46%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(255, 217, 138, 0.75), rgba(240, 169, 68, 0.25) 55%, transparent);
+  opacity: 0.4;
+  pointer-events: none;
+}
+.doorGlow,
+.peek,
+.doorLight,
+.doorLine,
+.mailbox,
+.mailNote {
+  position: absolute;
+}
+
+/* The skeleton peeks from inside the doorway (clipped to the door opening). */
+.peek {
+  left: 53.4%;
+  top: 66.2%;
+  width: 10.9%;
+  height: 21%;
+  overflow: hidden;
+  border-radius: 50% 50% 0 0 / 35% 35% 0 0;
+  rotate: -4deg;
+}
+.peek svg {
+  position: absolute;
+  width: 135%;
+  left: -10%;
+  top: 10%;
+  transform: translateX(70%);
+}
+
+.doorLight {
+  z-index: 5;
+  left: 53.4%;
+  top: 66.2%;
+  width: 10.9%;
+  height: 21%;
+  border-radius: 50% 50% 0 0 / 35% 35% 0 0;
+  rotate: -4deg;
+  background: radial-gradient(circle at 50% 70%, #fbe7b0 0%, #f4cd7c 45%, #eab25c 100%);
+  opacity: 0;
+  pointer-events: none;
+  will-change: transform;
+}
+
+.doorLine {
+  left: 66%;
+  top: 56%;
+  width: 32%;
+  font-family: var(--font-hand);
+  font-size: clamp(0.9rem, 1.6vw, 1.3rem);
+  line-height: 1.1;
+  color: var(--parchment);
+  text-shadow: 1px 1px 0 var(--line), 0 0 10px rgba(18, 10, 25, 0.8);
+  opacity: 0;
+}
+
+.mailbox {
+  left: 31%;
+  top: 77%;
+  width: 6%;
+  min-width: 34px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+.mailbox svg {
+  width: 100%;
+  overflow: visible;
+}
+.flag {
+  transform-box: fill-box;
+  transform-origin: 0% 100%;
+  transition: transform 0.4s var(--ease-out);
+}
+.mailbox[data-open="true"] .flag {
+  transform: rotate(-80deg);
+}
+.mailbox:hover svg,
+.mailbox:focus-visible svg {
+  filter: drop-shadow(0 0 6px rgba(255, 217, 138, 0.8));
+}
+.mailNote {
+  left: 18%;
+  top: 60%;
+  width: 34%;
+  padding: 8px 10px;
+  font-family: var(--font-hand);
+  font-size: clamp(0.85rem, 1.4vw, 1.1rem);
+  line-height: 1.1;
+  color: var(--plum-950);
+  background: var(--parchment);
+  border: 2px solid var(--line);
+  border-radius: 10px;
+  rotate: -3deg;
+}
+
+.whisper {
+  z-index: 3;
+  font-family: var(--font-hand);
+  font-size: clamp(1.2rem, 2.2vw, 1.8rem);
+  color: var(--parchment);
+  text-shadow: 2px 2px 0 var(--line);
+  opacity: 0;
+  pointer-events: none;
+}
+.whisperA {
+  left: 12vw;
+  bottom: 22svh;
+  rotate: -6deg;
+}
+.whisperB {
+  right: 12vw;
+  bottom: 30svh;
+  rotate: 5deg;
+}
+
+.branch {
+  top: calc(var(--nav-h) - 40px);
+  right: -8vw;
+  width: clamp(220px, 28vw, 460px);
+  z-index: 5;
+}
+.branch svg {
+  width: 100%;
+  height: auto;
+  transform: scaleX(-1);
+}
+
+.fgL,
+.fgR {
+  bottom: -2svh;
+  width: clamp(200px, 30vw, 460px);
+  z-index: 5;
+}
+.fgL svg,
+.fgR svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.fgL {
+  left: -4vw;
+}
+.fgR {
+  right: -4vw;
+}
+
+/* ------- Title ------- */
+
+.titleBlock {
+  z-index: 6;
+  left: 0;
+  right: 0;
+  top: calc(var(--nav-h) + 2svh);
+  display: grid;
+  justify-items: center;
+  text-align: center;
+  padding-inline: 16px;
+  pointer-events: none;
+}
+.titleBlock > * {
+  pointer-events: auto;
+}
+
+.kicker {
+  font-family: var(--font-hand);
+  font-size: clamp(1.3rem, 2.4vw, 1.9rem);
+  color: var(--plum-950);
+  background: var(--parchment);
+  border: 2px solid var(--line);
+  padding: 0 14px 2px;
+  border-radius: 999px;
+  rotate: -3deg;
+  margin-bottom: 0.4svh;
+}
+
+.title {
+  --size: clamp(3.2rem, min(12.5vw, 13.5svh), 9.5rem);
+  display: grid;
+  justify-items: center;
+  font-size: var(--size);
+  font-weight: 900;
+  font-variation-settings: "SOFT" 100, "WONK" 1, "opsz" 144;
+  line-height: 0.82;
+  letter-spacing: 0.02em;
+  color: var(--parchment);
+  -webkit-text-stroke: 0.06em var(--line);
+  paint-order: stroke fill;
+  text-shadow: 0.05em 0.06em 0 var(--coral-600), 0.08em 0.1em 0 var(--line);
+}
+.word {
+  display: block;
+  white-space: nowrap;
+}
+.word[data-word="1"] {
+  font-family: var(--font-hand);
+  font-weight: 700;
+  font-size: 0.42em;
+  line-height: 1;
+  color: var(--ochre-300);
+  -webkit-text-stroke: 0.08em var(--line);
+  margin-block: -0.05em 0.02em;
+  rotate: -4deg;
+  text-shadow: 0.06em 0.08em 0 var(--line);
+}
+.letter {
+  display: inline-block;
+  rotate: calc((mod(var(--i), 3) - 1) * 4deg);
+  translate: 0 calc((mod(var(--i) + var(--w), 2) - 0.5) * 0.04em);
+}
+
+.line {
+  margin-top: 1.4svh;
+  font-family: var(--font-display);
+  font-variation-settings: "SOFT" 100, "WONK" 1;
+  font-weight: 600;
+  font-style: italic;
+  font-size: clamp(1.05rem, 2vw, 1.4rem);
+  color: var(--plum-950);
+  background: rgba(246, 221, 138, 0.82);
+  padding: 2px 12px;
+  border-radius: 8px;
+}
+
+.cta {
+  z-index: 7;
+  left: clamp(16px, 4vw, 56px);
+  bottom: max(5svh, 18px);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+/* ------- Narrow screens: recomposed, not just shrunk ------- */
+@media (max-width: 699px) {
+  .moon {
+    --moon: min(112vw, 62svh);
+    width: var(--moon);
+    top: calc(var(--nav-h) + 2svh);
+  }
+  .smallMoon {
+    left: auto;
+    right: 4vw;
+    margin-left: 0;
+    top: calc(var(--nav-h) + 1svh);
+  }
+  .planet {
+    left: 4vw;
+    top: calc(var(--nav-h) + 30svh);
+  }
+  .house {
+    --house-w: min(124vw, 56svh);
+    bottom: 10svh;
+  }
+  .title {
+    --size: clamp(3.2rem, min(19vw, 11svh), 6rem);
+  }
+  .cloudL {
+    width: 62vw;
+    left: -24vw;
+    top: 38svh;
+  }
+  .cloudR {
+    width: 58vw;
+    right: -24vw;
+    top: 46svh;
+  }
+  .cloudBackL,
+  .cloudBackR {
+    width: 44vw;
+    top: 52svh;
+  }
+  .mtnL,
+  .mtnR {
+    width: 46vw;
+    height: 18svh;
+    bottom: 14svh;
+  }
+  .fgL,
+  .fgR {
+    width: 44vw;
+  }
+  .branch {
+    width: 52vw;
+    top: calc(var(--nav-h) + 22svh);
+  }
+  .whisperA {
+    left: 6vw;
+    bottom: 34svh;
+  }
+  .whisperB {
+    right: 6vw;
+    bottom: 40svh;
+  }
+  .cta {
+    left: 0;
+    right: 0;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    padding-inline: 12px;
+    bottom: max(2.5svh, 12px);
+  }
+  .cta :global(.btn) {
+    font-size: 0.98rem;
+    padding: 0.6em 1em;
+  }
+  .doorLine {
+    left: 30%;
+    top: 48%;
+    width: 50%;
+  }
+}
+
+/* ------- Simplified experience: a calm, finished composition ------- */
+:global(html[data-motion="reduced"]) .peek svg {
+  transform: translateX(8%);
+}
+:global(html[data-motion="reduced"]) .whisper,
+:global(html[data-motion="reduced"]) .doorLine {
+  opacity: 1;
+}
+:global(html[data-motion="reduced"]) .doorGlow {
+  opacity: 0.9;
+}
+
+/* Hold still while someone is reaching for it. */
+.smallMoonDrift:hover,
+.smallMoonDrift:focus-within {
+  animation-play-state: paused;
+}

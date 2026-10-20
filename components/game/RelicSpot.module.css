@@ -1,0 +1,47 @@
+.spot {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  min-width: 48px;
+  min-height: 48px;
+  padding: 4px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+  transition: transform 0.3s var(--ease-out);
+}
+.spot:hover,
+.spot:focus-visible {
+  transform: scale(1.15) rotate(-6deg);
+}
+.art {
+  filter: drop-shadow(0 0 8px rgba(255, 217, 138, 0.55));
+}
+.twinkle {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 12px;
+  height: 12px;
+  background: var(--parchment);
+  clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%);
+  animation: twinkle 2.6s ease-in-out infinite;
+}
+@keyframes twinkle {
+  0%,
+  100% {
+    transform: scale(1) rotate(0);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(0.3) rotate(90deg);
+    opacity: 0.2;
+  }
+}
+.spot[data-found="true"] {
+  opacity: 0.55;
+}
+.spot[data-found="true"] .twinkle {
+  display: none;
+}

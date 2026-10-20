@@ -1,0 +1,354 @@
+/* ------------------------------------------------------------------
+   BLUE HOUSE — design tokens and base styles
+   ------------------------------------------------------------------ */
+
+:root {
+  /* Palette */
+  --plum-950: #120a19;
+  --plum-900: #1b1024;
+  --plum-800: #2a1734;
+  --plum-700: #3d2147;
+  --plum-600: #5a3260;
+  --ink-950: #0a0f22;
+  --ink-900: #0e1630;
+  --ink-800: #16224a;
+  --ink-700: #1f2f5c;
+  --ink-500: #34497c;
+  --teal-700: #24706f;
+  --teal-500: #4fb3a9;
+  --teal-400: #6cc8bd;
+  --teal-300: #9adbd0;
+  --moss-700: #3f5a26;
+  --moss-500: #6b8a37;
+  --moss-300: #a3b864;
+  --coral-600: #c4664f;
+  --coral-500: #de8a72;
+  --coral-300: #efb6a0;
+  --rose-500: #c98a8f;
+  --ochre-700: #9c6419;
+  --ochre-500: #e0a23a;
+  --ochre-300: #f4cf72;
+  --moon: #f6dd8a;
+  --parchment: #f3e7cc;
+  --parchment-dim: #d8c8a4;
+  --parchment-deep: #b9a47c;
+  --line: #1a1022;
+
+  /* Semantic */
+  --bg: var(--plum-900);
+  --text: var(--parchment);
+  --text-dim: #cdbfa4;
+  --accent: var(--ochre-300);
+  --focus: var(--ochre-300);
+
+  /* Type (font variables set by next/font in the root layout) */
+  --font-display: var(--font-fraunces), "Iowan Old Style", Georgia, serif;
+  --font-body: var(--font-karla), "Avenir Next", system-ui, sans-serif;
+  --font-hand: var(--font-caveat), "Segoe Print", "Bradley Hand", cursive;
+  --font-term: var(--font-vt323), ui-monospace, "Courier New", monospace;
+
+  --radius: 14px;
+  --nav-h: 64px;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --shadow-soft: 0 10px 30px rgba(8, 4, 14, 0.45);
+  --shadow-ink: 3px 4px 0 var(--line);
+
+  color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  background: var(--bg);
+}
+
+body {
+  margin: 0;
+  min-height: 100svh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 1.0625rem;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+
+img,
+svg {
+  max-width: 100%;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+  font-variation-settings: "SOFT" 100, "WONK" 1;
+  font-weight: 600;
+  line-height: 1.05;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+p {
+  margin: 0;
+}
+
+a {
+  color: inherit;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+::selection {
+  background: var(--teal-500);
+  color: var(--plum-950);
+}
+
+/* Paper grain over everything. One cheap tiled PNG, no blend modes. */
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  pointer-events: none;
+  background-image: url("/textures/grain.png");
+  background-size: 192px 192px;
+  opacity: 0.55;
+}
+
+/* Screen-reader-only helper */
+.sr-only {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: fixed;
+  left: 12px;
+  top: -80px;
+  z-index: 200;
+  padding: 10px 16px;
+  background: var(--parchment);
+  color: var(--plum-950);
+  border-radius: 10px;
+  font-weight: 700;
+  text-decoration: none;
+}
+.skip-link:focus {
+  top: 12px;
+}
+
+/* ------------------------------------------------------------------
+   Shared UI pieces
+   ------------------------------------------------------------------ */
+
+/* Ink-outlined button. Variants: .btn-gold, .btn-teal, .btn-ghost */
+.btn {
+  --btn-bg: var(--parchment);
+  --btn-fg: var(--plum-950);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  min-height: 48px;
+  padding: 0.7em 1.25em;
+  border: 2.5px solid var(--line);
+  border-radius: 999px 999px 999px 999px / 60% 70% 60% 75%;
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  box-shadow: var(--shadow-ink);
+  font-family: var(--font-display);
+  font-variation-settings: "SOFT" 100, "WONK" 1;
+  font-weight: 650;
+  font-size: 1.05rem;
+  line-height: 1.1;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out), background-color 0.2s;
+}
+.btn:hover {
+  transform: translate(-1px, -2px) rotate(-0.6deg);
+  box-shadow: 4px 6px 0 var(--line);
+}
+.btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0 var(--line);
+}
+.btn-gold {
+  --btn-bg: var(--ochre-300);
+}
+.btn-teal {
+  --btn-bg: var(--teal-300);
+}
+.btn-coral {
+  --btn-bg: var(--coral-300);
+}
+.btn-ghost {
+  --btn-bg: transparent;
+  --btn-fg: var(--parchment);
+  border-color: currentColor;
+  box-shadow: none;
+}
+.btn[aria-disabled="true"],
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Small stamped labels: "sample", "preview", "coming soon" */
+.stamp {
+  display: inline-block;
+  padding: 0.15em 0.6em;
+  border: 1.5px dashed currentColor;
+  border-radius: 6px;
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  transform: rotate(-2deg);
+  opacity: 0.9;
+}
+
+/* Parchment paper surface with a worn edge */
+.paper {
+  background: radial-gradient(120% 90% at 30% 20%, #f7eed8 0%, var(--parchment) 45%, #e6d4ad 100%);
+  color: var(--plum-950);
+  border: 2.5px solid var(--line);
+  border-radius: 18px 22px 16px 24px / 20px 16px 24px 18px;
+  box-shadow: var(--shadow-soft), inset 0 0 40px rgba(156, 100, 25, 0.18);
+}
+
+.page-shell {
+  min-height: 100svh;
+  padding: calc(var(--nav-h) + 32px) clamp(16px, 4vw, 56px) 80px;
+}
+
+.kicker {
+  font-family: var(--font-hand);
+  font-size: 1.5rem;
+  color: var(--ochre-300);
+  line-height: 1.1;
+}
+
+/* Ambient animations pause when their scene is off screen ([data-active="false"])
+   and stop entirely in the simplified experience. */
+[data-active="false"] * {
+  animation-play-state: paused !important;
+}
+
+html[data-motion="reduced"] *,
+html[data-motion="reduced"] *::before,
+html[data-motion="reduced"] *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+  scroll-behavior: auto !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html:not([data-motion="full"]) *,
+  html:not([data-motion="full"]) *::before,
+  html:not([data-motion="full"]) *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* ------------------------------------------------------------------
+   Ambient life inside illustrations (classes used in SVG art).
+   Final keyframes are the resting state, so the simplified
+   experience (which fast-forwards animations) looks natural.
+   ------------------------------------------------------------------ */
+.twinkle-star {
+  animation: star-twinkle 3.2s ease-in-out infinite;
+}
+@keyframes star-twinkle {
+  0%, 100% { opacity: 0.9; }
+  50% { opacity: 0.2; }
+}
+
+.cloud-lid {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: lid 7s ease-in-out infinite;
+}
+@keyframes lid {
+  0%, 60%, 100% { transform: scaleY(1); }
+  66% { transform: scaleY(1.9); }
+  72% { transform: scaleY(1); }
+}
+
+.house-window {
+  animation: window-flicker 5s steps(1) infinite;
+}
+@keyframes window-flicker {
+  0%, 100% { opacity: 1; }
+  46% { opacity: 0.75; }
+  48% { opacity: 1; }
+  80% { opacity: 0.88; }
+}
+
+.blink {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: blink 5.5s infinite;
+}
+@keyframes blink {
+  0%, 92%, 100% { transform: scaleY(1); }
+  95% { transform: scaleY(0.1); }
+}
+
+.sway {
+  animation: sway 6s ease-in-out infinite alternate;
+}
+@keyframes sway {
+  0% { transform: rotate(-3deg); }
+  100% { transform: rotate(3deg); }
+}
+
+.glow-shroom {
+  animation: shroom-glow 4s ease-in-out infinite;
+}
+@keyframes shroom-glow {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.78; }
+}
+
+.creature {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: creature-hop 6s ease-in-out infinite;
+}
+.creature-b { animation-delay: 2s; }
+.creature-c { animation-delay: 4s; }
+@keyframes creature-hop {
+  0%, 80%, 100% { transform: translateY(0); }
+  86% { transform: translateY(-6px) rotate(-4deg); }
+  92% { transform: translateY(0); }
+}

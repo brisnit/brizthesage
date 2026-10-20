@@ -1,0 +1,334 @@
+/* ---------- Phone ---------- */
+.phonePanel {
+  display: grid;
+  gap: 16px;
+}
+
+.callLog {
+  list-style: none;
+  margin: 0;
+  padding: 12px;
+  display: grid;
+  gap: 8px;
+  max-height: 34svh;
+  min-height: 120px;
+  overflow: auto;
+  background: rgba(10, 6, 16, 0.45);
+  border: 2px dashed rgba(243, 231, 204, 0.25);
+  border-radius: 14px;
+}
+.callLog li {
+  max-width: 85%;
+  padding: 8px 12px;
+  border-radius: 14px 14px 14px 4px;
+  background: var(--parchment);
+  color: var(--plum-950);
+  font-family: var(--font-hand);
+  font-size: 1.3rem;
+  line-height: 1.15;
+}
+.callLog li[data-from="you"] {
+  justify-self: end;
+  border-radius: 14px 14px 4px 14px;
+  background: var(--teal-300);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+.typing {
+  display: flex;
+  gap: 5px;
+  width: fit-content;
+}
+.typing span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--plum-700);
+  animation: dot 1s infinite;
+}
+.typing span:nth-child(2) {
+  animation-delay: 0.15s;
+}
+.typing span:nth-child(3) {
+  animation-delay: 0.3s;
+}
+@keyframes dot {
+  50% {
+    transform: translateY(-4px);
+    opacity: 0.4;
+  }
+}
+
+.options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.options :global(.btn) {
+  min-height: 44px;
+  font-size: 0.95rem;
+  padding: 0.5em 1em;
+}
+
+.dialArea {
+  border-top: 2px dashed rgba(243, 231, 204, 0.25);
+  padding-top: 14px;
+}
+.dialTitle {
+  font-family: var(--font-hand);
+  font-weight: 700;
+  font-size: 1.4rem;
+  color: var(--ochre-300);
+  margin-bottom: 8px;
+}
+.dialRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 18px 28px;
+}
+
+.dial {
+  --size: min(260px, 72vw);
+  --r: calc(var(--size) * 0.36);
+  position: relative;
+  width: var(--size);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--parchment) 0 22%, #c94b38 23% 100%);
+  border: 3px solid var(--line);
+  box-shadow: inset 0 -6px 0 rgba(0, 0, 0, 0.25), var(--shadow-ink);
+}
+.dialFace {
+  position: absolute;
+  inset: 18%;
+  border-radius: 50%;
+  border: 2px dashed rgba(26, 16, 34, 0.35);
+  transition: transform 0.45s var(--ease-out);
+}
+.dialFace[data-spin] {
+  transform: rotate(140deg);
+}
+.digit {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 46px;
+  height: 46px;
+  margin: -23px 0 0 -23px;
+  border-radius: 50%;
+  border: 2.5px solid var(--line);
+  background: var(--parchment);
+  color: var(--plum-950);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transform: rotate(var(--a)) translate(var(--r)) rotate(calc(-1 * var(--a)));
+  box-shadow: inset 0 3px 0 rgba(0, 0, 0, 0.15);
+}
+.digit:hover {
+  background: var(--ochre-300);
+}
+.digit:active {
+  background: var(--teal-300);
+}
+.dialStop {
+  position: absolute;
+  right: 4%;
+  bottom: 18%;
+  width: 18px;
+  height: 8px;
+  background: #d9cfb0;
+  border: 2px solid var(--line);
+  border-radius: 4px;
+  rotate: 35deg;
+}
+.dialControls {
+  display: grid;
+  gap: 8px;
+  justify-items: stretch;
+  min-width: 150px;
+}
+.dialed {
+  display: block;
+  padding: 8px 12px;
+  text-align: center;
+  font-family: var(--font-term);
+  font-size: 2rem;
+  letter-spacing: 0.2em;
+  background: #10261f;
+  color: #b8f5d9;
+  border: 2px solid var(--line);
+  border-radius: 8px;
+}
+
+/* ---------- TV ---------- */
+.tvEmpty {
+  display: grid;
+  gap: 12px;
+  justify-items: start;
+}
+.tvHeadline {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.4rem;
+}
+.tvScreen {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  max-height: 40svh;
+  overflow: hidden;
+  border: 10px solid #8a5a34;
+  outline: 3px solid var(--line);
+  border-radius: 28px;
+  background: #5b6f76;
+}
+.tvNoise {
+  position: absolute;
+  inset: -50%;
+  background-image: url("/textures/grain.png"), url("/textures/grain.png");
+  background-size: 96px 96px, 140px 140px;
+  opacity: 1;
+  animation: noise 0.4s steps(4) infinite;
+}
+@keyframes noise {
+  0% {
+    transform: translate(0, 0);
+  }
+  25% {
+    transform: translate(-7%, 4%);
+  }
+  50% {
+    transform: translate(5%, -6%);
+  }
+  75% {
+    transform: translate(-3%, 8%);
+  }
+}
+.tvBars {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 20%;
+  background: rgba(233, 255, 248, 0.18);
+  animation: roll 3s linear infinite;
+}
+@keyframes roll {
+  from {
+    top: -20%;
+  }
+  to {
+    top: 100%;
+  }
+}
+
+/* ---------- SageNet ---------- */
+.sagenet {
+  min-height: 360px;
+}
+.boot p {
+  margin: 0 0 4px;
+}
+.cursor {
+  animation: blinkc 1s steps(1) infinite;
+}
+@keyframes blinkc {
+  50% {
+    opacity: 0;
+  }
+}
+.termButton {
+  min-height: 44px;
+  padding: 4px 8px;
+  border: none;
+  background: transparent;
+  color: #b8f5d9;
+  font-family: var(--font-term);
+  font-size: 1.3rem;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.termButton[aria-current="page"] {
+  color: #10261f;
+  background: #b8f5d9;
+  text-decoration: none;
+}
+.termButton:focus-visible {
+  outline-color: #b8f5d9;
+}
+.portal {
+  display: grid;
+  gap: 12px;
+}
+.portalNav {
+  list-style: none;
+  margin: 0;
+  padding: 0 0 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 8px;
+  border-bottom: 2px dashed #3d7a64;
+}
+.portalBody {
+  display: grid;
+  gap: 10px;
+}
+.portalBody a {
+  color: #ffe58a;
+  display: inline-block;
+  padding: 6px 0;
+}
+.marquee {
+  overflow: hidden;
+  white-space: nowrap;
+  color: #ffe58a;
+}
+.marquee span {
+  display: inline-block;
+  animation: marquee 9s linear infinite;
+}
+@keyframes marquee {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+.counter {
+  padding: 0 6px;
+  background: #000;
+  color: #ff6b6b;
+  letter-spacing: 0.15em;
+}
+.construction {
+  padding: 6px 10px;
+  color: #1a1022;
+  background: repeating-linear-gradient(-45deg, #ffd23f 0 14px, #1a1022 14px 28px);
+  background-clip: padding-box;
+  text-shadow: none;
+}
+.construction {
+  color: #fff;
+  text-shadow: 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000;
+}
+.fragList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+}
+.fragTitle {
+  color: #ffe58a;
+}
+.hintFile {
+  margin: 0;
+  white-space: pre-wrap;
+  font-family: inherit;
+}

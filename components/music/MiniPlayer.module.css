@@ -1,0 +1,71 @@
+.player {
+  position: fixed;
+  z-index: 110;
+  left: 50%;
+  bottom: max(12px, env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  width: min(560px, calc(100vw - 24px));
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 14px;
+  background: var(--plum-800);
+  border: 2.5px solid var(--line);
+  border-radius: 999px;
+  box-shadow: var(--shadow-soft), 0 0 0 2px rgba(244, 207, 114, 0.25);
+}
+.play {
+  flex: none;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 2.5px solid var(--line);
+  background: var(--ochre-300);
+  color: var(--plum-950);
+  font-size: 1rem;
+  cursor: pointer;
+}
+.meta {
+  flex: 1;
+  min-width: 0;
+}
+.title {
+  font-weight: 800;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.release {
+  font-size: 0.8rem;
+  color: var(--text-dim);
+}
+.bar {
+  margin-top: 6px;
+  height: 4px;
+  border-radius: 4px;
+  background: rgba(243, 231, 204, 0.18);
+  overflow: hidden;
+}
+.bar span {
+  display: block;
+  height: 100%;
+  background: var(--teal-400);
+  transform-origin: left;
+}
+.skip {
+  display: flex;
+  gap: 4px;
+}
+.skip button {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 2px solid rgba(243, 231, 204, 0.5);
+  background: transparent;
+  font-size: 1.4rem;
+  cursor: pointer;
+}
+.skip button:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
