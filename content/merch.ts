@@ -55,7 +55,7 @@ export const shopCopy = {
   kicker: "Sage World",
   title: "The Curiosity Shop",
   intro: "A few things you might want to take home.",
-  previewLabel: "A possible future artifact.",
+  previewLabel: "Future artifact.",
   unavailable: "Not on the shelf yet.",
   notice:
     "Nothing here is for sale yet. These are design previews: no prices, no stock, and this site never asks for payment details.",
