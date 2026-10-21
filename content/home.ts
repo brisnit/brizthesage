@@ -8,7 +8,8 @@
 
 export const outsideCopy = {
   kicker: "You found the house.",
-  title: ["BRIZ", "THE", "SAGE"],
+  /** Big hero lettering, one word per line. Short words (3 letters or fewer, like "THE") are drawn small and handwritten. */
+  title: ["SAGE", "WORLD"],
   line: "There’s more beneath the surface.",
   cta: "Scroll into the blue house",
   listen: "Listen",

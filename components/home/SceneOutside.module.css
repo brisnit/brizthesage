@@ -383,7 +383,7 @@
   display: block;
   white-space: nowrap;
 }
-.word[data-word="1"] {
+.word[data-small] {
   font-family: var(--font-hand);
   font-weight: 700;
   font-size: 0.42em;

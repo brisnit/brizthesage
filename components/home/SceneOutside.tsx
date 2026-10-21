@@ -185,7 +185,7 @@ export default function SceneOutside({ reduced, onEnter }: Props) {
           </p>
           <h1 id="home-title" tabIndex={-1} className={styles.title} aria-label={outsideCopy.title.join(" ")}>
             {outsideCopy.title.map((word, w) => (
-              <span key={word} className={styles.word} data-word={w} aria-hidden="true">
+              <span key={word} className={styles.word} data-small={word.length <= 3 || undefined} aria-hidden="true">
                 {word.split("").map((ch, i) => (
                   <span key={i} className={styles.letter} data-letter style={{ "--i": i, "--w": w } as React.CSSProperties}>
                     {ch}
