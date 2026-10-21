@@ -1,4 +1,4 @@
-/** Illustrations for the Listening Room: a shelf of record spines and a turntable. */
+/** Illustrations for the Listening Room: a shelf of record spines and a static-filled TV. (The turntable is components/music/Deck.tsx.) */
 
 const SPINES = [
   { w: 14, h: 150, c: "var(--coral-500)" },
@@ -56,41 +56,6 @@ export function RecordShelf({ className }: { className?: string }) {
         {/* shelf plank */}
         <rect x="0" y="175" width={x + 120} height="22" fill="#5b3a26" stroke="var(--line)" strokeWidth="2.5" />
         <rect x="0" y="175" width={x + 120} height="22" fill="url(#hatch)" />
-      </g>
-    </svg>
-  );
-}
-
-/** A turntable with a spinning record (spins via CSS class from parent). */
-export function Turntable({ className, spinClass }: { className?: string; spinClass?: string }) {
-  return (
-    <svg viewBox="0 0 320 230" className={className} aria-hidden="true">
-      <g filter="url(#ink)">
-        <ellipse cx="160" cy="215" rx="150" ry="12" fill="rgba(0,0,0,0.35)" />
-        {/* wooden plinth */}
-        <path d="M14 70 L306 70 L300 205 L20 205 Z" fill="#7a4a2a" stroke="var(--line)" strokeWidth="3" strokeLinejoin="round" />
-        <path d="M14 70 L306 70 L300 205 L20 205 Z" fill="url(#hatch)" />
-        <rect x="26" y="78" width="268" height="118" rx="6" fill="#3a2230" stroke="var(--line)" strokeWidth="2.5" />
-        {/* platter + record */}
-        <g className={spinClass} style={{ transformOrigin: "120px 137px" }}>
-          <circle cx="120" cy="137" r="54" fill="#1c1426" stroke="var(--line)" strokeWidth="2.5" />
-          <circle cx="120" cy="137" r="44" fill="none" stroke="#4a3b57" strokeWidth="1.2" />
-          <circle cx="120" cy="137" r="34" fill="none" stroke="#4a3b57" strokeWidth="1.2" />
-          <circle cx="120" cy="137" r="18" fill="var(--coral-500)" stroke="var(--line)" strokeWidth="2" />
-          <path d="M108 128 C114 124 124 124 130 129" stroke="var(--line)" strokeWidth="2" fill="none" />
-          <path d="M78 110 A50 50 0 0 1 100 92" stroke="var(--teal-300)" strokeWidth="2.5" fill="none" strokeLinecap="round" />
-          <circle cx="120" cy="137" r="3" fill="var(--parchment)" />
-        </g>
-        {/* tonearm */}
-        <circle cx="250" cy="100" r="12" fill="var(--parchment-dim)" stroke="var(--line)" strokeWidth="2.5" />
-        <path d="M250 100 L232 172 L196 168" fill="none" stroke="var(--line)" strokeWidth="7" strokeLinecap="round" strokeLinejoin="round" />
-        <path d="M250 100 L232 172 L196 168" fill="none" stroke="var(--parchment-dim)" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" />
-        <rect x="184" y="161" width="16" height="12" rx="2" fill="var(--ochre-500)" stroke="var(--line)" strokeWidth="2" />
-        {/* knobs */}
-        <circle cx="262" cy="176" r="8" fill="var(--ochre-300)" stroke="var(--line)" strokeWidth="2" />
-        <circle cx="282" cy="176" r="5" fill="var(--teal-400)" stroke="var(--line)" strokeWidth="2" />
-        {/* lid hinge edge */}
-        <path d="M14 70 L40 22 L280 22 L306 70" fill="rgba(154,219,208,0.12)" stroke="var(--line)" strokeWidth="2.5" strokeLinejoin="round" />
       </g>
     </svg>
   );

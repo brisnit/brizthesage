@@ -3,11 +3,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { artistProfiles, musicCopy, releases, videos } from "@/content/music";
 import { artist } from "@/content/site";
-import { RecordShelf, StaticTv, Turntable } from "@/components/music/RoomArt";
+import { RecordShelf, StaticTv } from "@/components/music/RoomArt";
 import StreamingLinks from "@/components/music/StreamingLinks";
-import ListenPanel from "@/components/music/ListenPanel";
+import ListeningStation from "@/components/music/ListeningStation";
+import PlayReleaseButton from "@/components/music/PlayReleaseButton";
 import VideoShelf from "@/components/music/VideoShelf";
-import MiniPlayer, { type PlayableTrack } from "@/components/music/MiniPlayer";
 import SiteFooter from "@/components/ui/SiteFooter";
 import styles from "@/components/music/Music.module.css";
 
@@ -23,13 +23,10 @@ const formatDate = (d: string) =>
 
 export default function MusicPage() {
   const [featured, ...rest] = releases;
-  const playable: PlayableTrack[] = releases.flatMap((r) =>
-    r.tracks.filter((t) => t.audioSrc).map((t) => ({ title: t.title, release: r.title, src: t.audioSrc! })),
-  );
 
   return (
     <>
-      <main className={styles.room} data-has-player={playable.length > 0}>
+      <main className={styles.room}>
         <div className={styles.lampGlow} aria-hidden="true" />
 
         <header className={styles.intro}>
@@ -38,11 +35,7 @@ export default function MusicPage() {
             <h1 className={styles.title}>{musicCopy.title}</h1>
             <p className={styles.lede}>{musicCopy.lede}</p>
           </div>
-          <Turntable className={styles.turntable} spinClass={styles.spin} />
-        </header>
-
-        {featured && (
-          <section className={styles.featured} aria-labelledby="featured-title">
+          {featured && (
             <div className={styles.sleeve}>
               <div className={styles.vinyl} aria-hidden="true" />
               <Image
@@ -51,12 +44,19 @@ export default function MusicPage() {
                 width={featured.artwork.width}
                 height={featured.artwork.height}
                 priority
-                sizes="(max-width: 800px) 86vw, 520px"
+                sizes="(max-width: 800px) 70vw, 420px"
                 className={styles.cover}
               />
             </div>
+          )}
+        </header>
+
+        <ListeningStation />
+
+        {featured && (
+          <section className={styles.about} aria-labelledby="featured-title">
             <div className={`paper ${styles.notes}`}>
-              <p className={styles.notesKicker}>{musicCopy.featuredKicker}</p>
+              <p className={styles.notesKicker}>{musicCopy.aboutKicker}</p>
               <h2 id="featured-title" className={styles.featuredTitle}>
                 {featured.title}
               </h2>
@@ -78,20 +78,9 @@ export default function MusicPage() {
               </dl>
               {featured.description && <p className={styles.description}>{featured.description}</p>}
               <p className={styles.credits}>{featured.credits}</p>
-
-              <h3 className={styles.subhead}>Tracklist</h3>
-              {featured.tracks.length > 0 ? (
-                <ol className={styles.tracks}>
-                  {featured.tracks.map((t) => (
-                    <li key={t.title}>
-                      <span>{t.title}</span>
-                      {t.duration && <span className={styles.duration}>{t.duration}</span>}
-                    </li>
-                  ))}
-                </ol>
-              ) : (
-                <p className={styles.tbd}>The tracklist is still being written on the back of the sleeve.</p>
-              )}
+              <p className={styles.description}>
+                {featured.tracks.length} songs, all in the player above.
+              </p>
 
               {featured.links.length > 0 && (
                 <>
@@ -103,7 +92,6 @@ export default function MusicPage() {
           </section>
         )}
 
-        {featured && <ListenPanel release={featured} />}
 
         <RecordShelf className={styles.shelf} />
 
@@ -138,7 +126,10 @@ export default function MusicPage() {
                   {r.credits}
                   {r.role && <span className={styles.crateRole}> · {r.role}</span>}
                 </p>
-                <StreamingLinks links={r.links} label={`Where to listen to ${r.title}`} small />
+                <div className={styles.crateActions}>
+                  <PlayReleaseButton releaseId={r.id} title={r.title} />
+                  <StreamingLinks links={r.links} label={`Where to listen to ${r.title}`} small />
+                </div>
               </li>
             ))}
             <li className={`${styles.crateItem} ${styles.crateEmpty}`}>
@@ -177,7 +168,6 @@ export default function MusicPage() {
         </nav>
       </main>
       <SiteFooter />
-      {playable.length > 0 && <MiniPlayer tracks={playable} />}
     </>
   );
 }
