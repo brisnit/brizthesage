@@ -27,6 +27,11 @@ export const roomCopy = {
   kicker: "The living room",
   title: "Make yourself strange.",
   hint: "Things that glow do things.",
+  /** Scrolls to the interactive room and moves focus into it. */
+  exploreLabel: "Explore the room",
+  /** Opens the same destinations as a simple list. */
+  listLabel: "See it as a list",
+  sceneLabel: "The living room. Every glowing object can be opened.",
   directoryTitle: "Explore the room",
   directoryNote: "Same doors, fewer cobwebs.",
   /** Shown before the rug slides aside. */

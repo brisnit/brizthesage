@@ -28,6 +28,7 @@ type Bubble = { id: string; text: string; n: number };
  */
 export default function SceneRoom({ reduced, onDescend }: Props) {
   const root = useRef<HTMLElement>(null);
+  const sceneRef = useRef<HTMLDivElement>(null);
   const state = useGame();
   const [dialog, setDialog] = useState<RoomDialog | null>(null);
   const [directoryOpen, setDirectoryOpen] = useState(false);
@@ -42,6 +43,23 @@ export default function SceneRoom({ reduced, onDescend }: Props) {
     const t = window.setTimeout(() => setBubble(null), 3800);
     return () => window.clearTimeout(t);
   }, [bubble]);
+
+  /** "Explore the room": bring the interactive scene into view and move focus into it. */
+  const exploreRoom = () => {
+    const section = root.current;
+    const scene = sceneRef.current;
+    if (!section || !scene) return;
+    const navH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--nav-h")) || 64;
+    // While pinned, the whole room is on screen from the section's first scroll position.
+    // In the simplified layout, scroll until the scene sits just under the nav.
+    const top = reduced
+      ? scene.getBoundingClientRect().top + window.scrollY - navH
+      : section.getBoundingClientRect().top + window.scrollY;
+    window.scrollTo({ top, behavior: reduced ? "auto" : "smooth" });
+    scene.focus({ preventScroll: true });
+    scene.dataset.flash = "true";
+    window.setTimeout(() => delete scene.dataset.flash, 1400);
+  };
 
   const quip = (id: string, text: string) => setBubble({ id, text, n: ++bubbleSeq.current });
 
@@ -130,15 +148,18 @@ export default function SceneRoom({ reduced, onDescend }: Props) {
           <h2 id="room-title" className={styles.title}>
             {roomCopy.title}
           </h2>
-          <p className={styles.hint}>
-            {roomCopy.hint}{" "}
-            <button type="button" className={styles.directoryButton} onClick={() => setDirectoryOpen(true)}>
-              {roomCopy.directoryTitle}
+          <p className={styles.hint}>{roomCopy.hint}</p>
+          <div className={styles.headActions}>
+            <button type="button" className={styles.directoryButton} data-primary onClick={exploreRoom}>
+              {roomCopy.exploreLabel} <span aria-hidden="true">↓</span>
             </button>
-          </p>
+            <button type="button" className={styles.directoryButton} onClick={() => setDirectoryOpen(true)}>
+              {roomCopy.listLabel}
+            </button>
+          </div>
         </header>
 
-        <div className={styles.canvasRow}>
+        <div ref={sceneRef} id="room-scene" className={styles.canvasRow} role="group" aria-label={roomCopy.sceneLabel} tabIndex={-1}>
           <div className={styles.canvas}>
             <div className={styles.wall} aria-hidden="true" />
             <div className={styles.wainscot} aria-hidden="true" />
@@ -192,6 +213,9 @@ export default function SceneRoom({ reduced, onDescend }: Props) {
               } as React.CSSProperties;
               const extra = {
                 "data-id": obj.id,
+                // Near the top edge, captions and reactions open downward instead of up.
+                "data-top": obj.desktop.y < 32 || undefined,
+                "data-top-m": obj.mobile.y < 24 || undefined,
                 "data-dest": isDest || undefined,
                 "data-swing": obj.id === "clock" && swinging ? "true" : undefined,
                 "data-found": obj.id === "clock" && state.found.key ? "true" : undefined,

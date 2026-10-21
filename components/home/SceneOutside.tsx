@@ -102,11 +102,6 @@ export default function SceneOutside({ reduced, onEnter }: Props) {
         <div className={styles.moon} data-anim="moon" aria-hidden="true">
           <Moon />
         </div>
-        <div className={styles.smallMoon} data-anim="small-moon">
-          <div className={styles.smallMoonDrift}>
-            <RelicSpot relic="moon" label="Something small and shiny drifting near the moon" size={46} />
-          </div>
-        </div>
         <div className={styles.cloudBackL} data-anim="cloud-back-l" aria-hidden="true">
           <Cloud tone="dusk" face={false} />
         </div>
@@ -121,39 +116,48 @@ export default function SceneOutside({ reduced, onEnter }: Props) {
         </div>
         <div className={styles.sea} aria-hidden="true" />
 
-        <div className={styles.house} data-anim="house">
-          <House className={styles.houseArt} />
-          <div className={styles.doorGlow} data-anim="door-glow" aria-hidden="true" />
-          <div className={styles.peek} data-anim="peek" aria-hidden="true">
-            <Skeleton pose="peek" headOnly />
+        {/* The interactive part of the scene. On phones this is its own box between
+            the title and the buttons, so copy never covers the mailbox or the relic. */}
+        <div className={styles.scene}>
+          <div className={styles.smallMoon} data-anim="small-moon">
+            <div className={styles.smallMoonDrift}>
+              <RelicSpot relic="moon" label="Something small and shiny drifting near the moon" size={46} />
+            </div>
           </div>
-          <p className={styles.doorLine} data-anim="door-line">
-            {approachCopy.doorLine}
-          </p>
-          <button
-            type="button"
-            className={styles.mailbox}
-            aria-label="A crooked mailbox"
-            aria-expanded={mailOpen}
-            onClick={() => setMailOpen((v) => !v)}
-            data-open={mailOpen}
-          >
-            <svg viewBox="0 0 60 90" aria-hidden="true">
-              <path d="M27 88 L29 46 L35 46 L33 88 Z" fill="#6f3f39" stroke="var(--line)" strokeWidth="2.5" />
-              <path d="M8 48 L8 30 C8 18 18 12 30 12 C42 12 52 18 52 30 L52 48 Z" fill="var(--coral-500)" stroke="var(--line)" strokeWidth="3" />
-              <path d="M8 48 L8 30 C8 22 13 17 20 15 C14 20 14 26 14 30 L14 48 Z" fill="var(--coral-600)" />
-              <g className={styles.flag}>
-                <path d="M52 34 L58 34 L58 14 L66 14 L66 22 L58 22" fill="var(--ochre-300)" stroke="var(--line)" strokeWidth="2.5" strokeLinejoin="round" />
-              </g>
-              {mailOpen && <path d="M14 30 L22 18 L46 22 L42 34 Z" fill="var(--parchment)" stroke="var(--line)" strokeWidth="2" />}
-            </svg>
-          </button>
-          {mailOpen && (
-            <p className={styles.mailNote} role="status">
-              A postcard: “{outsideCopy.postcard}”
+          <div className={styles.house} data-anim="house">
+            <House className={styles.houseArt} />
+            <div className={styles.doorGlow} data-anim="door-glow" aria-hidden="true" />
+            <div className={styles.peek} data-anim="peek" aria-hidden="true">
+              <Skeleton pose="peek" headOnly />
+            </div>
+            <p className={styles.doorLine} data-anim="door-line">
+              {approachCopy.doorLine}
             </p>
-          )}
-          <div className={styles.doorLight} data-anim="door-light" aria-hidden="true" />
+            <button
+              type="button"
+              className={styles.mailbox}
+              aria-label="A crooked mailbox"
+              aria-expanded={mailOpen}
+              onClick={() => setMailOpen((v) => !v)}
+              data-open={mailOpen}
+            >
+              <svg viewBox="0 0 60 90" aria-hidden="true">
+                <path d="M27 88 L29 46 L35 46 L33 88 Z" fill="#6f3f39" stroke="var(--line)" strokeWidth="2.5" />
+                <path d="M8 48 L8 30 C8 18 18 12 30 12 C42 12 52 18 52 30 L52 48 Z" fill="var(--coral-500)" stroke="var(--line)" strokeWidth="3" />
+                <path d="M8 48 L8 30 C8 22 13 17 20 15 C14 20 14 26 14 30 L14 48 Z" fill="var(--coral-600)" />
+                <g className={styles.flag}>
+                  <path d="M52 34 L58 34 L58 14 L66 14 L66 22 L58 22" fill="var(--ochre-300)" stroke="var(--line)" strokeWidth="2.5" strokeLinejoin="round" />
+                </g>
+                {mailOpen && <path d="M14 30 L22 18 L46 22 L42 34 Z" fill="var(--parchment)" stroke="var(--line)" strokeWidth="2" />}
+              </svg>
+            </button>
+            {mailOpen && (
+              <p className={styles.mailNote} role="status">
+                A postcard: “{outsideCopy.postcard}”
+              </p>
+            )}
+            <div className={styles.doorLight} data-anim="door-light" aria-hidden="true" />
+          </div>
         </div>
 
         <p className={`${styles.whisper} ${styles.whisperA}`} data-anim="whisper">

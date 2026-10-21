@@ -164,6 +164,28 @@
   border-top: 3px solid var(--line);
 }
 
+/* Holds the interactive bits (house + mailbox, small moon). Covers the stage on
+   desktop; on phones it becomes its own box between the title and the buttons. */
+.scene {
+  inset: 0;
+  pointer-events: none;
+}
+.scene > * {
+  position: absolute;
+}
+.scene .house {
+  pointer-events: none;
+}
+.scene .mailbox,
+.scene .smallMoon {
+  pointer-events: auto;
+}
+/* Decorative layers never take taps. */
+.stage > [aria-hidden="true"],
+.whisper {
+  pointer-events: none;
+}
+
 .house {
   --house-w: min(94vw, 68svh);
   width: var(--house-w);
@@ -543,4 +565,48 @@
 .smallMoonDrift:hover,
 .smallMoonDrift:focus-within {
   animation-play-state: paused;
+}
+
+/* ------- Phones: title, scene and buttons in normal flow ------- */
+@media (max-width: 699px) {
+  .stage {
+    display: flex;
+    flex-direction: column;
+  }
+  .titleBlock,
+  .scene,
+  .cta {
+    position: relative;
+    inset: auto;
+  }
+  .titleBlock {
+    order: 1;
+    flex: none;
+    padding-top: calc(var(--nav-h) + 1.5svh);
+  }
+  .scene {
+    order: 2;
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+  .cta {
+    order: 3;
+    flex: none;
+    padding: 10px 12px max(2.5svh, 12px);
+  }
+  /* The house fits the scene box: larger text shrinks the house, never overlaps it. */
+  .house {
+    /* Wide inset range so auto margins centre the house even when it's wider than the screen. */
+    left: -50%;
+    right: -50%;
+    bottom: 0;
+    width: auto;
+    height: min(100%, calc(124vw * 620 / 700), calc(56svh * 620 / 700));
+  }
+  .smallMoon {
+    top: 0;
+    right: 4vw;
+    left: auto;
+    margin: 0;
+  }
 }

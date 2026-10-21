@@ -30,6 +30,7 @@
   transform: rotate(-8deg) translateY(-2px);
 }
 .wordmark {
+  white-space: nowrap;
   font-family: var(--font-display);
   font-variation-settings: "SOFT" 100, "WONK" 1;
   font-weight: 750;
@@ -230,8 +231,13 @@
   }
 }
 
-@media (max-width: 380px) {
+/* Phones: the wordmark scales with the screen so large text settings never wrap it. */
+@media (max-width: 899px) {
   .wordmark {
-    font-size: 0.95rem;
+    font-size: min(1.1rem, 4.4vw);
+    letter-spacing: 0.05em;
+  }
+  .menuButton {
+    flex: none;
   }
 }

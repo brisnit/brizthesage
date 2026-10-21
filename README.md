@@ -105,7 +105,9 @@ Notes:
 - Native scrolling throughout: no scroll-jacking, no forced smooth scroll. Scrubbed timelines reverse when scrolling up.
 - Off-screen scenes pause their ambient CSS animation (`data-active="false"`).
 - Phones get recomposed layouts: a 10:16 room with its own placements in `content/room.ts`, a re-framed hero, and fewer decor pieces.
-- An **“Explore the room”** button opens an accessible list of every destination, for touch and keyboard users.
+- **Layout rule: intro copy never sits on an interactive scene.** In the living room, the intro (title, hint, buttons), the room and the foot line are in normal flow; the room has its own box (`#room-scene`) with a fixed aspect ratio, and every hotspot is positioned inside it, so the copy's height (or a larger text setting) can only shrink the room, never cover it. The wallpaper and floor spill outside that box so it still reads as one space. On phones the hero works the same way: title, then the house and moon relic in their own box, then the buttons.
+- **Taps go to objects, not decoration.** Decorative layers have `pointer-events: none`, and each room object only takes taps on its painted shapes (plus a centred 44px core), so transparent corners and glows never block a neighbour.
+- **“Explore the room”** scrolls to the room and moves keyboard focus into it; **“See it as a list”** opens an accessible list of every destination, for touch and keyboard users.
 - **Simplified experience:** this follows `prefers-reduced-motion`, and the “Simplified” toggle in the nav overrides it either way. In this mode, no timelines are built, every scene shows its finished composition, and all content, routes, interactions and clues remain. The setting is stored in `localStorage` and applied before first paint.
 
 ---
