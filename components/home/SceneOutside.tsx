@@ -197,9 +197,6 @@ export default function SceneOutside({ reduced, onEnter }: Props) {
               </span>
             ))}
           </h1>
-          <p className={styles.line} data-anim="intro-fade">
-            {outsideCopy.line}
-          </p>
         </div>
 
         <div className={styles.cta} data-anim="cta">

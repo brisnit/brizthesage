@@ -11,7 +11,6 @@ export const outsideCopy = {
   postcard: "You found the house. Now go inside.",
   /** Hero lettering, one line each. `small` lines are drawn small and handwritten. */
   title: [{ text: "Welcome to", small: true }, { text: "Sage" }, { text: "World." }] as { text: string; small?: boolean }[],
-  line: "A little music. A little mystery. A lot beneath the surface.",
   /** Primary invitation (scrolls into the house). */
   cta: "Come on in.",
   /** Small scroll cue. */

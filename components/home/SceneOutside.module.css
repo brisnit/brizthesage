@@ -371,6 +371,26 @@
   display: block;
   white-space: nowrap;
 }
+/* "Sage" and "World." drift slowly, slightly out of step with each other. */
+.word:not([data-small]) {
+  animation: titleFloat 7s ease-in-out infinite;
+}
+.word:not([data-small]) + .word:not([data-small]) {
+  animation-duration: 8.5s;
+  animation-delay: -3s;
+}
+@keyframes titleFloat {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  30% {
+    transform: translateY(-0.06em) rotate(-0.8deg);
+  }
+  65% {
+    transform: translateY(0.035em) rotate(0.6deg);
+  }
+}
 .word[data-small] {
   font-family: var(--font-hand);
   font-weight: 700;
@@ -387,19 +407,6 @@
   display: inline-block;
   rotate: calc((mod(var(--i), 3) - 1) * 4deg);
   translate: 0 calc((mod(var(--i) + var(--w), 2) - 0.5) * 0.04em);
-}
-
-.line {
-  margin-top: 1.4svh;
-  font-family: var(--font-display);
-  font-variation-settings: "SOFT" 100, "WONK" 1;
-  font-weight: 600;
-  font-style: italic;
-  font-size: clamp(1.05rem, 2vw, 1.4rem);
-  color: var(--plum-950);
-  background: rgba(246, 221, 138, 0.82);
-  padding: 2px 12px;
-  border-radius: 8px;
 }
 
 .cue {
@@ -456,10 +463,6 @@
   }
   .title {
     --size: clamp(3.2rem, min(19vw, 11svh), 6rem);
-  }
-  .line {
-    max-width: 19rem;
-    text-wrap: balance;
   }
   .cloudL {
     width: 62vw;
