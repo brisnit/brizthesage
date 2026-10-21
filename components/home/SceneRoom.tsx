@@ -53,9 +53,6 @@ function edge(p: Placement, left: number, right: number) {
   return p.x < left ? "left" : p.x + p.w > right ? "right" : undefined;
 }
 
-/** Wall-mounted decor drifts a little as you scroll (subtle parallax). */
-const PARALLAX: Partial<Record<RoomDecorId, number>> = { window: 1, photo: 0.6, shelf: 0.8, hanger: 1.2 };
-
 function DecorArt({ id }: { id: RoomDecorId }) {
   if (id === "window")
     return (
@@ -219,16 +216,6 @@ export default function SceneRoom({ reduced, onDescend }: Props) {
           .to(q("[data-anim='hole']"), { scale: 34, duration: 0.14, ease: "power2.in" }, 0.86);
       });
 
-      // Subtle parallax: wall-mounted decor drifts against the scroll. Objects stay put,
-      // so every hotspot stays exactly on its drawing.
-      q("[data-speed]").forEach((el: HTMLElement) => {
-        const amount = Number(el.dataset.speed) * 28;
-        gsap.fromTo(
-          el,
-          { y: -amount },
-          { y: amount, ease: "none", scrollTrigger: { trigger: sceneRef.current, start: "top bottom", end: "bottom top", scrub: true } },
-        );
-      });
       return () => mm.revert();
     },
     { scope: root, dependencies: [reduced], revertOnUpdate: true },
@@ -284,8 +271,7 @@ export default function SceneRoom({ reduced, onDescend }: Props) {
                 data-id={d.id}
                 data-hide-desktop={!d.desktop || undefined}
                 data-hide-mobile={!d.mobile || undefined}
-                data-speed={PARALLAX[d.id]}
-                style={placeVars(d.desktop, d.mobile)}
+                  style={placeVars(d.desktop, d.mobile)}
                 aria-hidden="true"
               >
                 <DecorArt id={d.id} />
