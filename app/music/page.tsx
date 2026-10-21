@@ -5,6 +5,7 @@ import { artistProfiles, musicCopy, releases, videos } from "@/content/music";
 import { artist } from "@/content/site";
 import { RecordShelf, StaticTv, Turntable } from "@/components/music/RoomArt";
 import StreamingLinks from "@/components/music/StreamingLinks";
+import ListenPanel from "@/components/music/ListenPanel";
 import VideoShelf from "@/components/music/VideoShelf";
 import MiniPlayer, { type PlayableTrack } from "@/components/music/MiniPlayer";
 import SiteFooter from "@/components/ui/SiteFooter";
@@ -101,6 +102,8 @@ export default function MusicPage() {
             </div>
           </section>
         )}
+
+        {featured && <ListenPanel release={featured} />}
 
         <RecordShelf className={styles.shelf} />
 
