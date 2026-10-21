@@ -105,6 +105,7 @@ function Levels({ levels, which }: { levels: RoomLevel[]; which: "desktop" | "mo
 export default function SceneRoom({ reduced }: Props) {
   const root = useRef<HTMLElement>(null);
   const sceneRef = useRef<HTMLDivElement>(null);
+  const headRef = useRef<HTMLElement>(null);
   const state = useGame();
   const [dialog, setDialog] = useState<RoomDialog | null>(null);
   const [directoryOpen, setDirectoryOpen] = useState(false);
@@ -119,6 +120,17 @@ export default function SceneRoom({ reduced }: Props) {
     const t = window.setTimeout(() => setBubble(null), 3800);
     return () => window.clearTimeout(t);
   }, [bubble]);
+
+  // Desktop: the copy overlays the room's empty wall; share its height so the
+  // room can make room for it (e.g. with larger text settings).
+  useEffect(() => {
+    const head = headRef.current;
+    const section = root.current;
+    if (!head || !section || !("ResizeObserver" in window)) return;
+    const ro = new ResizeObserver(() => section.style.setProperty("--head-h", `${head.offsetHeight}px`));
+    ro.observe(head);
+    return () => ro.disconnect();
+  }, []);
 
   /** "Explore the room": bring the room to the top of the screen and move focus into it. */
   const exploreRoom = () => {
@@ -197,7 +209,7 @@ export default function SceneRoom({ reduced }: Props) {
     >
       <div className={styles.veil} data-anim="veil" aria-hidden="true" />
 
-      <header className={styles.head}>
+      <header ref={headRef} className={styles.head}>
         <p className="kicker">{roomCopy.kicker}</p>
         <h2 id="room-title" className={styles.title}>
           {roomCopy.title}
@@ -274,6 +286,20 @@ export default function SceneRoom({ reduced }: Props) {
           })}
 
           <div className={styles.lampLight} aria-hidden="true" />
+        </div>
+
+        {/* Desktop: the invitation is a quiet text link on the empty floor, bottom-left
+            (the header buttons are used on smaller screens instead). */}
+        <div className={styles.floorLinks} data-cta>
+          <button type="button" className={styles.exploreLink} onClick={exploreRoom}>
+            {roomCopy.exploreLabel}
+            <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+              <path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
+          <button type="button" className={styles.listLink} onClick={() => setDirectoryOpen(true)}>
+            {roomCopy.listLinkLabel}
+          </button>
         </div>
       </div>
 

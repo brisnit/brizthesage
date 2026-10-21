@@ -31,6 +31,8 @@ export const roomCopy = {
   exploreLabel: "Explore the room",
   /** Opens the same destinations as a simple list. */
   listLabel: "See it as a list",
+  /** Desktop: the quieter text-link version of the list button. */
+  listLinkLabel: "or see it as a list",
   sceneLabel: "The living room. Every glowing object can be opened.",
   directoryTitle: "Explore the room",
   directoryNote: "Same doors, fewer cobwebs.",
