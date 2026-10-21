@@ -773,3 +773,184 @@
     color: var(--parchment);
   }
 }
+
+/* ---------- The rug beat (desktop: it happens right here in the room) ---------- */
+.stage {
+  position: relative;
+}
+.rugLine,
+.floorDeco,
+.floorCue {
+  display: none;
+}
+
+@media (min-width: 700px) {
+  /* The room holds in place for the rug beat, so the stage is at least a screen tall;
+     the floor runs on to its bottom edge. */
+  .stage {
+    min-height: 100svh;
+    overflow: clip;
+  }
+  .levels[data-layout="desktop"] .floor[data-last] {
+    height: auto !important;
+    bottom: -100vh;
+  }
+
+  .floorDeco {
+    display: block;
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+  .floorDeco > * {
+    position: absolute;
+  }
+  .floorDeco svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+  .rugGlow {
+    left: 24%;
+    top: 78%;
+    width: 42%;
+    height: 24%;
+    z-index: 55;
+    border-radius: 50%;
+    background: radial-gradient(closest-side, rgba(154, 219, 208, 0.7), rgba(79, 179, 169, 0.25) 55%, transparent);
+    opacity: 0;
+  }
+  .hatch {
+    left: 36%;
+    top: 83.5%;
+    width: 18%;
+    z-index: 56;
+  }
+  .rug {
+    left: 28%;
+    top: 81%;
+    width: 34%;
+    z-index: 57;
+    transform-origin: 50% 50%;
+  }
+  .skeleton {
+    left: 63%;
+    top: 70%;
+    width: 7%;
+    z-index: 95;
+    visibility: hidden;
+  }
+  /* Baboo Baboo faces the hatch. */
+  .skeleton svg {
+    transform: scaleX(-1);
+  }
+  .hole {
+    left: 42%;
+    top: 84.6%;
+    width: 6%;
+    aspect-ratio: 1;
+    z-index: 300;
+    border-radius: 50%;
+    background: radial-gradient(circle, #120d1c 0 52%, #1b3b3a 62%, #4fb3a9 70%, rgba(79, 179, 169, 0) 72%);
+    visibility: hidden;
+    will-change: transform;
+  }
+  .floorDeco :global(.hatch-seam) {
+    animation: halo 1.8s ease-in-out infinite;
+  }
+
+  /* Sits on the rug (decoration), never on an object. */
+  .floorCue {
+    display: grid;
+    place-items: center;
+    position: absolute;
+    z-index: 100;
+    left: 45%;
+    top: 89%;
+    translate: -50% -50%;
+  }
+  .floorCue > * {
+    grid-area: 1 / 1;
+  }
+  .downHint {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 6px 14px;
+    font-family: var(--font-hand);
+    font-size: clamp(1.3rem, 1.7vw, 1.7rem);
+    line-height: 1.1;
+    white-space: nowrap;
+    color: var(--parchment);
+    text-decoration: none;
+    text-shadow: 1px 1px 0 var(--line);
+    /* A soft dark pill keeps it readable on the rug's busy pattern. */
+    background: rgba(18, 10, 25, 0.72);
+    border-radius: 999px;
+    box-shadow: 0 4px 18px rgba(10, 5, 16, 0.45);
+    visibility: hidden;
+  }
+  .hatchButton {
+    display: none !important;
+  }
+
+  /* The rug line takes the intro's spot when the rug is pulled aside. */
+  .head {
+    position: relative;
+  }
+  .rugLine {
+    display: block;
+    position: absolute;
+    top: calc(var(--nav-h) + 16px);
+    left: 16px;
+    right: 16px;
+    visibility: hidden;
+    font-family: var(--font-display);
+    font-variation-settings: "SOFT" 100, "WONK" 1;
+    font-style: italic;
+    font-weight: 600;
+    font-size: clamp(1.5rem, 2.4vw, 2.3rem);
+    line-height: 1.15;
+    color: var(--teal-300);
+    text-shadow: 2px 2px 0 var(--line), 0 0 18px rgba(79, 179, 169, 0.5);
+  }
+  .hatchCaption {
+    margin-top: 8px;
+    font-family: var(--font-hand);
+    font-style: normal;
+    font-weight: 400;
+    font-size: clamp(1.15rem, 1.5vw, 1.45rem);
+    color: var(--parchment);
+    text-shadow: 1px 1px 0 var(--line);
+  }
+
+  /* Simplified experience: the finished scene, with a button to go down. */
+  :global(html[data-motion="reduced"]) .rug {
+    /* A shorter slide here, since the corner links stay visible in this mode. */
+    transform: translate(-28%, 6%) rotate(8deg);
+  }
+  :global(html[data-motion="reduced"]) .rugGlow {
+    opacity: 1;
+  }
+  :global(html[data-motion="reduced"]) .skeleton {
+    visibility: visible;
+  }
+  :global(html[data-motion="reduced"]) .floorDeco [data-part="lid"] {
+    transform: scaleY(-0.3);
+  }
+  :global(html[data-motion="reduced"]) .hatchButton {
+    display: inline-flex !important;
+  }
+}
+
+@media (min-width: 1240px) {
+  .head {
+    position: absolute;
+  }
+  .rugLine {
+    top: calc(var(--nav-h) + 32px);
+    left: clamp(12px, 3vw, 32px);
+    right: clamp(12px, 3vw, 32px);
+  }
+}

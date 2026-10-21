@@ -208,3 +208,10 @@
   position: relative;
   z-index: 2;
 }
+
+/* Desktop: the rug is part of the living room (see SceneRoom). */
+@media (min-width: 700px) {
+  .rugScene {
+    display: none;
+  }
+}

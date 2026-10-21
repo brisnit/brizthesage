@@ -4,7 +4,8 @@
  * Each object is placed in percentages of the room canvas (x/y = top-left
  * corner, w = width; height follows the drawing's own proportions):
  *   - desktop: one wide room, 16:10 (160 x 100 units). The top-left wall is
- *              kept clear: the intro copy sits there on wide screens.
+ *              kept clear (the intro copy sits there on wide screens) and the
+ *              rug and hatch sit on the floor in front of the sofa.
  *   - phones:  a tall split-level room, 1:3 (100 x 300 units), in three
  *              staggered levels joined by stairs
  * The canvas scrolls with the page, so objects keep a generous size instead
@@ -49,7 +50,7 @@ export const roomDecor: { id: RoomDecorId; desktop: Placement | null; mobile: Pl
   { id: "books", desktop: { x: 16.6, y: 68.5, w: 3.1 }, mobile: null },
   { id: "records", desktop: { x: 63.4, y: 67.7, w: 2.2 }, mobile: { x: 48, y: 84.4, w: 6 } },
   { id: "candles", desktop: { x: 70, y: 85.6, w: 2.5 }, mobile: { x: 38, y: 84.27, w: 7 } },
-  { id: "slippers", desktop: { x: 60, y: 93, w: 3.75 }, mobile: { x: 60, y: 58.67, w: 12 } },
+  { id: "slippers", desktop: { x: 64, y: 90, w: 3.75 }, mobile: { x: 60, y: 58.67, w: 12 } },
   { id: "stairs-1", desktop: null, mobile: { x: 2, y: 33.67, w: 22 } },
   { id: "stairs-2", desktop: null, mobile: { x: 76, y: 61.67, w: 22 } },
 ];
@@ -133,7 +134,7 @@ export const roomObjects: RoomObject[] = [
       lines: ["Someone saved you a seat.", "You find 41 cents and a guitar pick.", "The cushion sighs."],
     },
     inDirectory: false,
-    desktop: { x: 32.5, y: 70, w: 25 },
+    desktop: { x: 32.5, y: 59, w: 25 },
     mobile: { x: 22, y: 47.33, w: 60 },
   },
   {
@@ -160,7 +161,7 @@ export const roomObjects: RoomObject[] = [
     caption: "The phone probably isn’t for you.",
     action: { type: "dialog", dialog: "phone" },
     inDirectory: true,
-    desktop: { x: 19.5, y: 76.2, w: 6.25 },
+    desktop: { x: 19.5, y: 64.2, w: 6.25 },
     mobile: { x: 3, y: 48.33, w: 17 },
   },
   {
@@ -187,7 +188,7 @@ export const roomObjects: RoomObject[] = [
     caption: "It moved. Plants don’t move.",
     action: { type: "quip", lines: ["The plant waves back.", "It’s thriving on bass frequencies.", "Rustle."] },
     inDirectory: false,
-    desktop: { x: 58.75, y: 72.5, w: 4.4 },
+    desktop: { x: 58.75, y: 62.4, w: 4.4 },
     mobile: { x: 84, y: 46.5, w: 13 },
   },
 ];
