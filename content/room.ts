@@ -1,7 +1,13 @@
 /**
- * Living-room objects. Each object is placed on the room stage in percentages
- * (x/y = top-left corner, w = width) of a 16:10 stage on desktop and a 10:16
- * stage on phones. Change labels, captions and destinations here.
+ * Living-room objects and composition.
+ *
+ * Each object is placed in percentages of the room canvas (x/y = top-left
+ * corner, w = width; height follows the drawing's own proportions):
+ *   - desktop: one wide room, 16:9 (think 160 x 90 units)
+ *   - phones:  a tall split-level room, 1:3 (100 x 300 units), in three
+ *              staggered levels joined by stairs
+ * The canvas scrolls with the page, so objects keep a generous size instead
+ * of shrinking to fit the screen. Change labels, captions and destinations here.
  */
 
 import type { RelicId } from "./game";
@@ -15,6 +21,37 @@ export type RoomAction =
   | { type: "quip"; lines: string[] };
 
 export type Placement = { x: number; y: number; w: number };
+
+/**
+ * Room levels, in % of canvas height: where the wood paneling starts, where
+ * the floor starts (furniture stands on this line) and where the level ends.
+ * Between levels on phones, a ledge and a short staircase lead down.
+ */
+export type RoomLevel = { wainscot: number; floor: number; end: number };
+export const roomLevels: { desktop: RoomLevel[]; mobile: RoomLevel[] } = {
+  desktop: [{ wainscot: 44.4, floor: 71.1, end: 100 }],
+  mobile: [
+    { wainscot: 20, floor: 29.33, end: 33.33 },
+    { wainscot: 45, floor: 57.33, end: 61.33 },
+    { wainscot: 71.67, floor: 88, end: 100 },
+  ],
+};
+
+export type RoomDecorId = "window" | "photo" | "shelf" | "hanger" | "books" | "records" | "candles" | "slippers" | "stairs-1" | "stairs-2";
+
+/** Non-interactive set dressing. `mobile: null` hides it on phones (and `desktop: null` on desktop). */
+export const roomDecor: { id: RoomDecorId; desktop: Placement | null; mobile: Placement | null }[] = [
+  { id: "window", desktop: { x: 44, y: 6.7, w: 8.75 }, mobile: { x: 42, y: 63.67, w: 14 } },
+  { id: "photo", desktop: { x: 67.5, y: 20, w: 5.6 }, mobile: { x: 20, y: 65.33, w: 13 } },
+  { id: "shelf", desktop: { x: 87.5, y: 31.1, w: 10.6 }, mobile: { x: 34, y: 37.33, w: 40 } },
+  { id: "hanger", desktop: { x: 57.5, y: 0, w: 3.1 }, mobile: { x: 88, y: 35.33, w: 8 } },
+  { id: "books", desktop: { x: 16.6, y: 65, w: 3.1 }, mobile: null },
+  { id: "records", desktop: { x: 63.4, y: 64.1, w: 2.2 }, mobile: { x: 48, y: 84.4, w: 6 } },
+  { id: "candles", desktop: { x: 70, y: 84, w: 2.5 }, mobile: { x: 38, y: 84.27, w: 7 } },
+  { id: "slippers", desktop: { x: 60, y: 92.2, w: 3.75 }, mobile: { x: 60, y: 58.67, w: 12 } },
+  { id: "stairs-1", desktop: null, mobile: { x: 2, y: 33.67, w: 22 } },
+  { id: "stairs-2", desktop: null, mobile: { x: 76, y: 61.67, w: 22 } },
+];
 
 export type RoomObjectId =
   | "record-player"
@@ -49,8 +86,8 @@ export const roomObjects: RoomObject[] = [
     caption: "A few things the house remembers.",
     action: { type: "link", href: "/briz-lore" },
     inDirectory: true,
-    desktop: { x: 2.5, y: 24, w: 15 },
-    mobile: { x: 2, y: 14, w: 30 },
+    desktop: { x: 2.5, y: 24, w: 13.75 },
+    mobile: { x: 4, y: 6.23, w: 36 },
   },
   {
     id: "portrait",
@@ -61,8 +98,8 @@ export const roomObjects: RoomObject[] = [
       lines: ["The portrait pretends it wasn’t staring.", "“Nice shoes.”", "It winks. Portraits shouldn’t wink."],
     },
     inDirectory: false,
-    desktop: { x: 28, y: 20, w: 9 },
-    mobile: { x: 37, y: 10, w: 22 },
+    desktop: { x: 30, y: 8.9, w: 8.1 },
+    mobile: { x: 58, y: 0.33, w: 24 },
   },
   {
     id: "clock",
@@ -74,8 +111,8 @@ export const roomObjects: RoomObject[] = [
       quip: "The pendulum swings wide… and something brass falls out.",
     },
     inDirectory: false,
-    desktop: { x: 20, y: 22, w: 5 },
-    mobile: { x: 86, y: 8, w: 11 },
+    desktop: { x: 18.1, y: 22.2, w: 4.4 },
+    mobile: { x: 43, y: 1.67, w: 12 },
   },
   {
     id: "lamp",
@@ -83,8 +120,8 @@ export const roomObjects: RoomObject[] = [
     caption: "Click. Click.",
     action: { type: "quip", lines: ["Click.", "Click.", "It flickers like it has an opinion."] },
     inDirectory: false,
-    desktop: { x: 38, y: 30, w: 6 },
-    mobile: { x: 88, y: 24, w: 11 },
+    desktop: { x: 26.25, y: 36.3, w: 5 },
+    mobile: { x: 43, y: 13.7, w: 12 },
   },
   {
     id: "sofa",
@@ -95,8 +132,8 @@ export const roomObjects: RoomObject[] = [
       lines: ["Someone saved you a seat.", "You find 41 cents and a guitar pick.", "The cushion sighs."],
     },
     inDirectory: false,
-    desktop: { x: 30, y: 47, w: 28 },
-    mobile: { x: 22, y: 50, w: 56 },
+    desktop: { x: 32.5, y: 66.7, w: 25 },
+    mobile: { x: 22, y: 47.33, w: 60 },
   },
   {
     id: "tv",
@@ -104,8 +141,8 @@ export const roomObjects: RoomObject[] = [
     caption: "Adjust the antenna. Lower your expectations.",
     action: { type: "dialog", dialog: "tv" },
     inDirectory: true,
-    desktop: { x: 61, y: 40, w: 13 },
-    mobile: { x: 61, y: 27, w: 27 },
+    desktop: { x: 65, y: 45.3, w: 10.6 },
+    mobile: { x: 62, y: 72.53, w: 34 },
   },
   {
     id: "record-player",
@@ -113,8 +150,8 @@ export const roomObjects: RoomObject[] = [
     caption: "Something worth turning over.",
     action: { type: "link", href: "/music" },
     inDirectory: true,
-    desktop: { x: 75, y: 42, w: 12.5 },
-    mobile: { x: 3, y: 66, w: 30 },
+    desktop: { x: 77.5, y: 46.9, w: 10 },
+    mobile: { x: 4, y: 73.47, w: 32 },
   },
   {
     id: "phone",
@@ -122,8 +159,8 @@ export const roomObjects: RoomObject[] = [
     caption: "The phone probably isn’t for you.",
     action: { type: "dialog", dialog: "phone" },
     inDirectory: true,
-    desktop: { x: 20, y: 51, w: 7 },
-    mobile: { x: 4, y: 51, w: 15 },
+    desktop: { x: 17.5, y: 73.6, w: 6.25 },
+    mobile: { x: 3, y: 48.33, w: 17 },
   },
   {
     id: "computer",
@@ -131,8 +168,8 @@ export const roomObjects: RoomObject[] = [
     caption: "You have one new mystery.",
     action: { type: "dialog", dialog: "computer" },
     inDirectory: true,
-    desktop: { x: 88, y: 40, w: 11 },
-    mobile: { x: 34, y: 26, w: 25 },
+    desktop: { x: 89.4, y: 47.8, w: 8.75 },
+    mobile: { x: 57, y: 11.33, w: 36 },
   },
   {
     id: "trunk",
@@ -140,8 +177,8 @@ export const roomObjects: RoomObject[] = [
     caption: "Try something strange on.",
     action: { type: "link", href: "/merch" },
     inDirectory: true,
-    desktop: { x: 82, y: 71, w: 13 },
-    mobile: { x: 64, y: 68, w: 32 },
+    desktop: { x: 76.25, y: 79.2, w: 11.25 },
+    mobile: { x: 30, y: 89.33, w: 40 },
   },
   {
     id: "plant",
@@ -149,8 +186,8 @@ export const roomObjects: RoomObject[] = [
     caption: "It moved. Plants don’t move.",
     action: { type: "quip", lines: ["The plant waves back.", "It’s thriving on bass frequencies.", "Rustle."] },
     inDirectory: false,
-    desktop: { x: 57, y: 48, w: 5.5 },
-    mobile: { x: 82, y: 48, w: 13 },
+    desktop: { x: 58.75, y: 69.4, w: 4.4 },
+    mobile: { x: 84, y: 46.5, w: 13 },
   },
 ];
 

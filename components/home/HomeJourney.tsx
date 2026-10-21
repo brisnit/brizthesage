@@ -5,11 +5,13 @@ import { useReducedMotion } from "@/lib/settings";
 import { ScrollTrigger } from "@/lib/gsap";
 import SceneOutside from "./SceneOutside";
 import SceneRoom from "./SceneRoom";
+import SceneRug from "./SceneRug";
 import SceneUnder from "./SceneUnder";
 
 /**
  * "What’s down inside the blue house?"
  * Outside → approach → living room → under the rug → under the house.
+ * The living room scrolls freely; the outside approach and the rug are pinned beats.
  * Each scene owns its own ScrollTrigger timeline; this component wires the
  * shortcuts between them and pauses ambient animation in off-screen scenes.
  */
@@ -53,7 +55,8 @@ export default function HomeJourney() {
   return (
     <div ref={root}>
       <SceneOutside reduced={reduced} onEnter={() => goTo("living-room")} />
-      <SceneRoom reduced={reduced} onDescend={() => goTo("under-the-house")} />
+      <SceneRoom reduced={reduced} />
+      <SceneRug reduced={reduced} onDescend={() => goTo("under-the-house")} />
       <SceneUnder
         reduced={reduced}
         onSurface={() => {

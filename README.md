@@ -97,15 +97,16 @@ The two reference images are flattened artwork, so the site does not treat them 
 `components/home/HomeJourney.tsx` composes three scene components. Each owns its own GSAP ScrollTrigger timeline, cleaned up automatically by `useGSAP`.
 
 1. **SceneOutside (scenes 1–2):** a pinned stage. Scrolling scales the house toward the crooked door, separates the clouds, and moves the foliage past fastest. Whispers appear and the skeleton peeks out. Then the door light swallows the screen.
-2. **SceneRoom (scenes 3–4):** a pinned living room. The first stretch of scroll is a deliberate pause to explore. Then the floor glows, the rug slides aside, the hatch opens, the skeleton points down, and the hole swallows the screen.
-3. **SceneUnder (scene 5):** native scrolling through soil strata with per-layer parallax (`data-speed`), tap-to-open discoveries, and the glowing listening chamber at the end.
+2. **SceneRoom (scene 3):** the living room, explored at your own pace with native scrolling.
+3. **SceneRug (scene 4):** a pinned close-up of the floor. The rug glows and slides aside, the hatch opens, Baboo Baboo points down, and the hole swallows the screen.
+4. **SceneUnder (scene 5):** native scrolling through soil strata with per-layer parallax (`data-speed`), tap-to-open discoveries, and the glowing listening chamber at the end.
 
 Notes:
 
 - Native scrolling throughout: no scroll-jacking, no forced smooth scroll. Scrubbed timelines reverse when scrolling up.
 - Off-screen scenes pause their ambient CSS animation (`data-active="false"`).
-- Phones get recomposed layouts: a 10:16 room with its own placements in `content/room.ts`, a re-framed hero, and fewer decor pieces.
-- **Layout rule: intro copy never sits on an interactive scene.** In the living room, the intro (title, hint, buttons), the room and the foot line are in normal flow; the room has its own box (`#room-scene`) with a fixed aspect ratio, and every hotspot is positioned inside it, so the copy's height (or a larger text setting) can only shrink the room, never cover it. The wallpaper and floor spill outside that box so it still reads as one space. On phones the hero works the same way: title, then the house and moon relic in their own box, then the buttons.
+- Phones get recomposed layouts: a split-level room with its own placements in `content/room.ts`, and a re-framed hero.
+- **Layout rule: intro copy never sits on an interactive scene.** The living room’s intro (title, hint, buttons) comes first in normal flow, then the room. The room is its own canvas that **scrolls with the page** instead of shrinking to fit the screen: one wide 16:9 room on desktop, and on phones a tall split-level room (three staggered levels joined by stairs: bookcase/computer, sofa/phone, record player/TV/trunk). Each object and decor piece has its own desktop and phone position and size in `content/room.ts` (`roomObjects`, `roomDecor`, `roomLevels`), so objects keep their proportions and every hotspot stays on its drawing. Wall-mounted decor drifts slightly as you scroll (subtle parallax); objects never move. The rug, hatch and descent are a separate pinned beat right after the room (`components/home/SceneRug.tsx`), on the same floor. On phones the hero works the same way: title, then the house and moon relic in their own box, then the buttons.
 - **Taps go to objects, not decoration.** Decorative layers have `pointer-events: none`, and each room object only takes taps on its painted shapes (plus a centred 44px core), so transparent corners and glows never block a neighbour.
 - **“Explore the room”** scrolls to the room and moves keyboard focus into it; **“See it as a list”** opens an accessible list of every destination, for touch and keyboard users.
 - **Simplified experience:** this follows `prefers-reduced-motion`, and the “Simplified” toggle in the nav overrides it either way. In this mode, no timelines are built, every scene shows its finished composition, and all content, routes, interactions and clues remain. The setting is stored in `localStorage` and applied before first paint.

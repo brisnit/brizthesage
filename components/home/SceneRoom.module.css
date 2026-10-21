@@ -1,53 +1,41 @@
 .room {
   position: relative;
-  background: #2a1a22;
+  overflow-x: clip;
   --wall: #5e3a44;
-  --floor: #3c2418;
+  /* One continuous wallpaper behind the intro copy and every level of the room. */
+  background-color: var(--wall);
+  background-image: linear-gradient(to bottom, rgba(20, 10, 20, 0.6), rgba(20, 10, 20, 0) 22rem),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Crect width='80' height='80' fill='%235e3a44'/%3E%3Cpath d='M0 80 C0 42 40 42 40 80 M40 80 C40 42 80 42 80 80' fill='none' stroke='%237d5250' stroke-width='7'/%3E%3Cpath d='M0 80 C0 52 40 52 40 80 M40 80 C40 52 80 52 80 80' fill='none' stroke='%23946a55' stroke-width='3'/%3E%3Ccircle cx='40' cy='20' r='7' fill='%23b0834f' opacity='.55'/%3E%3Ccircle cx='0' cy='20' r='7' fill='%23b0834f' opacity='.55'/%3E%3Ccircle cx='80' cy='20' r='7' fill='%23b0834f' opacity='.55'/%3E%3Cpath d='M36 18 a6 6 0 1 0 8 -4 a5 5 0 1 1 -8 4z' fill='%235e3a44'/%3E%3C/svg%3E");
+  background-size: auto, clamp(48px, 4.5vw, 72px) clamp(48px, 4.5vw, 72px);
 }
 
-.stage {
-  position: relative;
-  height: 100svh;
-  min-height: 560px;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  background: linear-gradient(to bottom, #3b232c 0%, #3b232c 50%, var(--floor) 50%);
-}
-
-/* Warm light carried in from the doorway; fades as the room arrives. */
-.room::before {
-  content: none;
-}
-
+/* Warm doorway light carried in from outside; fades as the room arrives. */
 .veil {
   position: absolute;
-  inset: 0;
+  inset: 0 0 auto;
+  height: 100svh;
   z-index: 99;
   background: radial-gradient(circle at 50% 60%, #fbe7b0, #f4cd7c 60%, #eab25c);
   opacity: 0;
   pointer-events: none;
 }
 
-/* Layout: intro copy, then the room in its own box, then the foot line.
-   All three are in normal flow, so copy can never sit on top of an object. */
+/* ---------- Intro copy: always above the room, in normal flow ---------- */
 .head {
   position: relative;
   z-index: 3;
-  flex: none;
-  padding: calc(var(--nav-h) + 2px) 16px 12px;
+  padding: calc(var(--nav-h) + 16px) 16px 18px;
   text-align: center;
-  background: linear-gradient(to bottom, rgba(26, 14, 24, 0.8), rgba(26, 14, 24, 0.55) 75%, rgba(26, 14, 24, 0));
 }
 .title {
-  font-size: clamp(1.7rem, 4vw, 2.8rem);
+  font-size: clamp(1.8rem, 4.4vw, 3rem);
   font-weight: 800;
   color: var(--parchment);
   text-shadow: 2px 3px 0 var(--line);
 }
 .hint {
   margin-top: 4px;
-  font-size: 0.95rem;
+  font-size: 1rem;
   color: var(--parchment);
 }
 .headActions {
@@ -55,7 +43,7 @@
   flex-wrap: wrap;
   justify-content: center;
   gap: 8px;
-  margin-top: 8px;
+  margin-top: 10px;
 }
 .directoryButton {
   min-height: 44px;
@@ -76,69 +64,105 @@
   background: var(--ochre-300);
 }
 
-/* The room's own responsive box. Artwork and hotspots are positioned inside
-   .canvas (a fixed aspect ratio), so they never depend on the copy's height.
-   The wallpaper and floor deliberately spill outside it (the stage clips them),
-   so the room reads as one continuous space behind the copy. */
-.canvasRow {
+/* ---------- The room ---------- */
+/* The room is its own box that scrolls with the page. Objects are positioned and
+   sized individually inside .canvas (see content/room.ts). */
+.scene {
   position: relative;
-  flex: 1 1 auto;
-  min-height: 0;
   z-index: 1;
-  isolation: isolate;
   outline: none;
-  container-type: size;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  scroll-margin-top: var(--nav-h);
 }
-
 .canvas {
   position: relative;
-  width: min(100cqw, 160cqh);
-  aspect-ratio: 16 / 10;
+  width: min(100%, 1600px);
+  margin-inline: auto;
+  aspect-ratio: 16 / 9;
+}
+.scene[data-flash] .canvas {
+  animation: roomFlash 1.4s var(--ease-out);
+}
+@keyframes roomFlash {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(244, 207, 114, 0);
+  }
+  30% {
+    box-shadow: inset 0 0 0 4px rgba(244, 207, 114, 0.9), inset 0 0 60px rgba(244, 207, 114, 0.35);
+  }
 }
 
-/* Room shell: extends past the canvas edges so wide screens stay inside the room. */
-.wall,
-.wainscot,
-.floor {
+/* Paneling, floors and ledges. They run past the canvas edges (the section clips them),
+   so the walls and floor stay continuous at any width. */
+.levels {
   position: absolute;
-  left: -60vw;
-  right: -60vw;
+  inset: 0;
+  pointer-events: none;
 }
-.wall {
-  top: -60vh;
-  height: calc(60vh + 38%);
-  background-color: var(--wall);
-  background-image: linear-gradient(to bottom, rgba(20, 10, 20, 0.55), rgba(20, 10, 20, 0) 60%),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Crect width='80' height='80' fill='%235e3a44'/%3E%3Cpath d='M0 80 C0 42 40 42 40 80 M40 80 C40 42 80 42 80 80' fill='none' stroke='%237d5250' stroke-width='7'/%3E%3Cpath d='M0 80 C0 52 40 52 40 80 M40 80 C40 52 80 52 80 80' fill='none' stroke='%23946a55' stroke-width='3'/%3E%3Ccircle cx='40' cy='20' r='7' fill='%23b0834f' opacity='.55'/%3E%3Ccircle cx='0' cy='20' r='7' fill='%23b0834f' opacity='.55'/%3E%3Ccircle cx='80' cy='20' r='7' fill='%23b0834f' opacity='.55'/%3E%3Cpath d='M36 18 a6 6 0 1 0 8 -4 a5 5 0 1 1 -8 4z' fill='%235e3a44'/%3E%3C/svg%3E");
-  background-size: auto, clamp(48px, 5cqw, 80px) clamp(48px, 5cqw, 80px);
-  background-position: 0 0, center bottom;
+.levels[data-layout="mobile"] {
+  display: none;
+}
+.wainscot,
+.floor,
+.ledge {
+  position: absolute;
+  left: -50vw;
+  right: -50vw;
 }
 .wainscot {
-  top: 38%;
-  height: 24%;
   background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 60%, rgba(0, 0, 0, 0.35)),
-    repeating-linear-gradient(90deg, #6a3d26 0 3.2%, #4e2c1b 3.2% 3.6%, #75452c 3.6% 6.4%, #4e2c1b 6.4% 6.8%);
+    repeating-linear-gradient(90deg, #6a3d26 0 38px, #4e2c1b 38px 43px, #75452c 43px 80px, #4e2c1b 80px 85px);
   border-top: 6px solid #3a2014;
   box-shadow: 0 -2px 0 var(--line);
 }
 .floor {
-  top: 62%;
-  bottom: -40vh;
-  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0) 25%, rgba(0, 0, 0, 0.3)),
-    repeating-linear-gradient(180deg, #4a2c1c 0 3.4%, #2e1a10 3.4% 3.8%);
-  border-top: 8px solid #22140d;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0) 40%),
+    repeating-linear-gradient(180deg, #4a2c1c 0 26px, #2e1a10 26px 30px);
+  border-top: 6px solid #22140d;
+}
+/* The last floor runs on into the rug close-up below. */
+.floor[data-last] {
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0) 18%),
+    repeating-linear-gradient(180deg, #4a2c1c 0 42px, #2e1a10 42px 47px);
+}
+/* The edge of a raised level: a wooden lip with a shadow falling onto the wall below. */
+.ledge {
+  height: 14px;
+  background: linear-gradient(#8a4f3a, #5a3622);
+  border-top: 2px solid var(--line);
+  border-bottom: 3px solid var(--line);
+  box-shadow: 0 10px 18px rgba(10, 5, 16, 0.55);
 }
 
-/* Window to the outside (desktop) */
-.window {
+/* Placement (desktop). Phones use --mx/--my/--mw below. */
+.decor,
+.obj {
   position: absolute;
-  left: 45%;
-  top: 19.5%;
-  width: 10.5%;
-  height: 18%;
+  left: calc(var(--x) * 1%);
+  top: calc(var(--y) * 1%);
+  width: calc(var(--w) * 1%);
+  z-index: var(--z);
+}
+.decor {
+  pointer-events: none;
+}
+.decor[data-hide-desktop] {
+  display: none;
+}
+.decor > svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.decor[data-id="stairs-2"] > svg {
+  transform: scaleX(-1);
+}
+
+.window {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1.8;
   border: 6px solid #6f3f39;
   outline: 2.5px solid var(--line);
   border-radius: 46% 46% 6px 6px / 30% 30% 6px 6px;
@@ -189,10 +213,6 @@
 }
 
 .photo {
-  position: absolute;
-  left: 63.5%;
-  top: 19%;
-  width: 6.5%;
   margin: 0;
   padding: 0.4%;
   background: #c99a3c;
@@ -200,7 +220,6 @@
   border-radius: 4px;
   rotate: 3deg;
   box-shadow: 3px 4px 0 rgba(10, 5, 16, 0.5);
-  z-index: 5;
 }
 .photo img {
   display: block;
@@ -210,137 +229,18 @@
   filter: sepia(0.25) saturate(0.9);
 }
 
-/* Rug, glow and hatch */
-.hatch,
-.rug,
-.rugGlow,
-.skeleton,
-.hole {
-  position: absolute;
-}
-.hatch {
-  left: 38.5%;
-  top: 75.5%;
-  width: 23%;
-  z-index: 6;
-}
-.hatch svg,
-.rug svg,
-.skeleton svg {
-  display: block;
-  width: 100%;
-  height: auto;
-}
-.rugGlow {
-  left: 26%;
-  top: 64%;
-  width: 48%;
-  height: 34%;
-  border-radius: 50%;
-  background: radial-gradient(closest-side, rgba(154, 219, 208, 0.65), rgba(79, 179, 169, 0.25) 55%, transparent);
-  opacity: 0;
-  z-index: 7;
-  pointer-events: none;
-}
-.rug {
-  left: 29%;
-  top: 72%;
-  width: 42%;
-  z-index: 8;
-  transform-origin: 50% 50%;
-}
-.skeleton {
-  left: 26%;
-  top: 46%;
-  width: 11%;
-  z-index: 85;
-  opacity: 0;
-  pointer-events: none;
-}
-.hole {
-  left: 45%;
-  top: 75%;
-  width: 10%;
-  aspect-ratio: 1;
-  border-radius: 50%;
-  background: radial-gradient(circle, #120d1c 0 52%, #1b3b3a 62%, #4fb3a9 70%, rgba(79, 179, 169, 0) 72%);
-  opacity: 0;
-  z-index: 95;
-  pointer-events: none;
-  will-change: transform;
-}
 
-/* Decorative layers never take taps. */
-.wall,
-.wainscot,
-.floor,
-.window,
-.photo,
-.hatch,
-.rug {
-  pointer-events: none;
-}
-
-/* Decor */
-.decor {
-  position: absolute;
-  pointer-events: none;
-}
-.decor svg {
-  display: block;
-  width: 100%;
-  height: auto;
-  overflow: visible;
-}
-.decor-books {
-  left: 17.6%;
-  top: 61%;
-  width: 3.2%;
-  z-index: 60;
-}
-.decor-records {
-  left: 73.2%;
-  top: 56%;
-  width: 2.6%;
-  z-index: 50;
-}
-.decor-slippers {
-  left: 52%;
-  top: 70%;
-  width: 4%;
-  z-index: 60;
-}
-.decor-candles {
-  left: 27.4%;
-  top: 61.5%;
-  width: 2.4%;
-  z-index: 60;
-}
-.decor-hanger {
-  left: 70.5%;
-  top: 0;
-  width: 3.5%;
-  z-index: 20;
-}
-.decor-shelf {
-  left: 87%;
-  top: 25%;
-  width: 11.5%;
-  z-index: 20;
-}
-
-/* Warm lamplight + vignette over the room (doesn't block clicks) */
+/* Warm lamplight vignette (doesn't block taps). */
 .lampLight {
   position: absolute;
-  inset: -20% -40%;
+  inset: 0;
   z-index: 80;
   pointer-events: none;
-  background: radial-gradient(circle at 41% 38%, rgba(255, 200, 110, 0.24), rgba(255, 200, 110, 0) 30%),
-    radial-gradient(ellipse at 50% 55%, rgba(10, 5, 16, 0) 40%, rgba(10, 5, 16, 0.55) 75%);
-  transition: background-color 0.3s;
+  background: radial-gradient(ellipse at 50% 50%, rgba(10, 5, 16, 0) 55%, rgba(10, 5, 16, 0.4) 100%);
+  transition: background 0.3s;
 }
 .room[data-lamp="off"] .lampLight {
-  background: radial-gradient(ellipse at 50% 55%, rgba(10, 5, 16, 0.25) 30%, rgba(10, 5, 16, 0.7) 80%);
+  background: radial-gradient(ellipse at 50% 50%, rgba(10, 5, 16, 0.35) 30%, rgba(10, 5, 16, 0.7) 90%);
 }
 .room[data-lamp="off"] :global(.lamp-glow) {
   opacity: 0;
@@ -353,10 +253,6 @@
 /* Only the painted parts of an object take taps, so one object's transparent
    corners never block another. A centred 44px core keeps small objects easy to hit. */
 .obj {
-  position: absolute;
-  left: calc(var(--x) * 1%);
-  top: calc(var(--y) * 1%);
-  width: calc(var(--w) * 1%);
   padding: 0;
   border: 0;
   background: none;
@@ -372,8 +268,8 @@
   position: absolute;
   left: 50%;
   top: 50%;
-  width: 44px;
-  height: 44px;
+  width: 48px;
+  height: 48px;
   translate: -50% -50%;
   pointer-events: auto;
 }
@@ -409,7 +305,7 @@
   position: absolute;
   top: -4px;
   right: 6%;
-  width: clamp(12px, 1.4cqw, 20px);
+  width: clamp(14px, 1.3vw, 20px);
   aspect-ratio: 1;
   background: var(--moon);
   clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%);
@@ -484,41 +380,6 @@
     opacity: 0;
     transform: translateY(8px) scale(0.9);
   }
-}
-
-/* Objects near the top of the room open their captions downward, away from the intro copy. */
-.obj[data-top] .caption,
-.obj[data-top] .bubble {
-  bottom: auto;
-  top: calc(100% + 8px);
-}
-
-.canvasRow[data-flash] .canvas {
-  animation: roomFlash 1.4s var(--ease-out);
-}
-@keyframes roomFlash {
-  0%,
-  100% {
-    box-shadow: 0 0 0 0 rgba(244, 207, 114, 0);
-  }
-  30% {
-    box-shadow: 0 0 0 4px rgba(244, 207, 114, 0.9), 0 0 40px rgba(244, 207, 114, 0.45);
-  }
-}
-
-/* Edge objects keep their captions on screen */
-.obj[data-id="bookcase"] .caption,
-.obj[data-id="bookcase"] .bubble {
-  left: 0;
-  translate: 0 0;
-}
-.obj[data-id="computer"] .caption,
-.obj[data-id="computer"] .bubble,
-.obj[data-id="trunk"] .caption,
-.obj[data-id="trunk"] .bubble {
-  left: auto;
-  right: 0;
-  translate: 0 0;
 }
 
 /* Object idle life */
@@ -657,72 +518,51 @@
 .obj:hover :global(.receiver) {
   animation: rattle 0.18s linear 3;
 }
-:global(.hatch-seam) {
-  animation: bookGlow 1.8s ease-in-out infinite;
-}
 
-/* ---------- Foot ---------- */
-.foot {
-  position: relative;
-  flex: none;
-  z-index: 3;
-  display: grid;
-  justify-items: center;
-  gap: 6px;
-  padding: 6px 16px max(14px, env(safe-area-inset-bottom));
-  min-height: 92px;
-  text-align: center;
-  pointer-events: none;
-}
-.foot > * {
-  pointer-events: auto;
-}
-.rugLine {
-  font-family: var(--font-display);
-  font-variation-settings: "SOFT" 100, "WONK" 1;
-  font-style: italic;
-  font-weight: 700;
-  font-size: clamp(1.25rem, 3vw, 2rem);
-  color: var(--teal-300);
-  text-shadow: 2px 2px 0 var(--line), 0 0 18px rgba(79, 179, 169, 0.6);
-  opacity: 0;
-}
-.hatchCaption {
-  margin-top: 2px;
-  font-family: var(--font-hand);
-  font-style: normal;
-  font-weight: 400;
-  font-size: clamp(1.1rem, 2vw, 1.4rem);
-  color: var(--parchment);
-  text-shadow: 1px 1px 0 var(--line);
-}
-.downHint {
+
+/* A soft halo behind every object says "this does something". */
+.obj::after {
+  content: "";
   position: absolute;
-  top: 6px;
-  left: 50%;
-  translate: -50% 0;
-  width: max-content;
-  max-width: calc(100vw - 32px);
-  padding: 10px 16px;
-  min-height: 44px;
-  font-family: var(--font-hand);
-  font-size: 1.4rem;
-  line-height: 1.1;
-  color: var(--parchment);
-  text-decoration: none;
-  animation: hintBob 2.4s ease-in-out infinite;
+  inset: -8% -10%;
+  z-index: -1;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(255, 217, 138, 0.2), rgba(255, 217, 138, 0) 75%);
+  pointer-events: none;
+  animation: halo 4.5s ease-in-out infinite;
 }
-@keyframes hintBob {
+@keyframes halo {
   0%,
   100% {
-    transform: translateY(0);
+    opacity: 0.55;
   }
   50% {
-    transform: translateY(4px);
+    opacity: 1;
   }
 }
-.hatchButton {
-  display: none !important;
+.obj:not([data-dest]) .spark {
+  width: clamp(10px, 0.9vw, 14px);
+  opacity: 0.8;
+  animation-duration: 3.6s;
+}
+
+/* Captions and reactions: open downward near the top of the room (away from the
+   intro copy) and hug the screen edge for objects at the sides. */
+.obj[data-top] .caption,
+.obj[data-top] .bubble {
+  bottom: auto;
+  top: calc(100% + 8px);
+}
+.obj[data-edge="left"] .caption,
+.obj[data-edge="left"] .bubble {
+  left: 0;
+  translate: 0 0;
+}
+.obj[data-edge="right"] .caption,
+.obj[data-edge="right"] .bubble {
+  left: auto;
+  right: 0;
+  translate: 0 0;
 }
 
 /* ---------- Directory dialog ---------- */
@@ -772,95 +612,39 @@
   color: var(--plum-700);
 }
 
-/* ---------- Phones: recomposed tall room (10:16) ---------- */
+/* ---------- Phones: a tall split-level room in three staggered groups ---------- */
 @media (max-width: 699px) {
   .canvas {
-    width: min(100cqw, 62.5cqh);
-    aspect-ratio: 10 / 16;
+    width: 100%;
+    aspect-ratio: 1 / 3;
   }
+  .levels[data-layout="desktop"] {
+    display: none;
+  }
+  .levels[data-layout="mobile"] {
+    display: block;
+  }
+  .decor,
   .obj {
     left: calc(var(--mx) * 1%);
     top: calc(var(--my) * 1%);
     width: calc(var(--mw) * 1%);
+    z-index: var(--mz);
   }
-  .wall {
-    height: calc(60vh + 34%);
+  .decor[data-hide-desktop] {
+    display: block;
   }
-  .wainscot {
-    top: 34%;
-    height: 16%;
-  }
-  .floor {
-    top: 50%;
-  }
-  .window {
+  .decor[data-hide-mobile] {
     display: none;
-  }
-  .photo {
-    left: 63%;
-    top: 11%;
-    width: 15%;
-  }
-  .decor-books {
-    left: 54%;
-    top: 63%;
-    width: 7%;
-  }
-  .decor-records,
-  .decor-candles,
-  .decor-shelf,
-  .decor-hanger {
-    display: none;
-  }
-  .decor-slippers {
-    left: 22%;
-    top: 92%;
-    width: 9%;
-  }
-  .hatch {
-    left: 30%;
-    top: 87%;
-    width: 40%;
-  }
-  .rugGlow {
-    left: 14%;
-    top: 78%;
-    width: 72%;
-    height: 22%;
-  }
-  .rug {
-    left: 18%;
-    top: 84%;
-    width: 64%;
-  }
-  .skeleton {
-    left: 33%;
-    top: 66%;
-    width: 18%;
-  }
-  .hole {
-    left: 42%;
-    top: 86.5%;
-    width: 16%;
   }
   .caption {
     display: none;
   }
   .bubble {
-    max-width: 180px;
-    font-size: 1.1rem;
+    max-width: min(240px, 70vw);
+    font-size: 1.15rem;
   }
-  .hint {
-    font-size: 0.88rem;
-  }
-  .obj[data-id="clock"] .bubble,
-  .obj[data-id="lamp"] .bubble,
-  .obj[data-id="plant"] .bubble,
-  .obj[data-id="tv"] .bubble {
-    left: auto;
-    right: 0;
-    translate: 0 0;
-  }
+  /* Reset the desktop direction rules, then apply the phone ones. */
   .obj[data-top] .bubble {
     top: auto;
     bottom: calc(100% + 8px);
@@ -869,78 +653,34 @@
     bottom: auto;
     top: calc(100% + 8px);
   }
-  .obj[data-id="phone"] .bubble,
-  .obj[data-id="record-player"] .bubble {
+  .obj[data-edge] .bubble {
+    left: 50%;
+    right: auto;
+    translate: -50% 0;
+  }
+  .obj[data-edge-m="left"] .bubble {
     left: 0;
     translate: 0 0;
   }
-}
-
-/* Touch devices: no hover, so the directory gets more emphasis. */
-@media (hover: none) {
-  .directoryButton {
-    background: var(--parchment);
-    color: var(--plum-950);
+  .obj[data-edge-m="right"] .bubble {
+    left: auto;
+    right: 0;
+    translate: 0 0;
+  }
+  .spark {
+    width: 16px;
   }
 }
 
-/* ---------- Simplified experience ---------- */
-:global(html[data-motion="reduced"]) .rug {
-  transform: translate(46%, 8%) rotate(-8deg);
-}
-:global(html[data-motion="reduced"]) .rugGlow,
-:global(html[data-motion="reduced"]) .skeleton,
-:global(html[data-motion="reduced"]) .rugLine {
-  opacity: 1;
-}
-:global(html[data-motion="reduced"]) .room [data-part="lid"] {
-  transform: scaleY(-0.3);
-}
-:global(html[data-motion="reduced"]) .hatchCaption {
-  margin-top: 2px;
-  font-family: var(--font-hand);
-  font-style: normal;
-  font-weight: 400;
-  font-size: clamp(1.1rem, 2vw, 1.4rem);
-  color: var(--parchment);
-  text-shadow: 1px 1px 0 var(--line);
-}
-.downHint {
-  display: none;
-}
-:global(html[data-motion="reduced"]) .hatchButton {
-  display: inline-flex !important;
-}
-
-/* Short screens (and large text): keep the intro compact so the room keeps its space. */
-@media (max-height: 720px) {
-  .head {
-    padding-bottom: 6px;
-  }
-  .head :global(.kicker) {
-    font-size: 1.15rem;
-  }
-  .title {
-    font-size: clamp(1.4rem, 3.4vw, 2.2rem);
-  }
-  .hint {
-    display: none;
-  }
-  .headActions {
-    margin-top: 4px;
-  }
-  .foot {
-    min-height: 76px;
-  }
-}
-
-/* Wide screens: intro on one row (title left, actions right) so the room keeps more height. */
+/* Wide screens: intro on one row (title left, actions right). */
 @media (min-width: 900px) {
   .head {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
     align-items: end;
     column-gap: 24px;
+    max-width: 1600px;
+    margin-inline: auto;
     padding-inline: clamp(16px, 4vw, 56px);
     text-align: left;
   }
@@ -963,25 +703,4 @@
     justify-content: flex-end;
     margin-top: 4px;
   }
-}
-
-/* The foot line reserves only what it needs. */
-.foot {
-  min-height: 0;
-  padding-top: 4px;
-}
-.rugLine {
-  font-size: clamp(1.1rem, 2.4vw, 1.7rem);
-  line-height: 1.15;
-}
-.hatchCaption {
-  font-size: clamp(1rem, 1.8vw, 1.25rem);
-}
-.downHint {
-  position: static;
-  translate: none;
-  grid-area: 1 / 1;
-}
-.rugLine {
-  grid-area: 1 / 1;
 }

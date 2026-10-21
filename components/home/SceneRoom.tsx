@@ -3,30 +3,106 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { roomCopy, rugCopy } from "@/content/home";
-import { directoryBlurbs, roomObjects, type RoomDialog, type RoomObject } from "@/content/room";
+import { roomCopy } from "@/content/home";
+import {
+  directoryBlurbs,
+  roomDecor,
+  roomLevels,
+  roomObjects,
+  type Placement,
+  type RoomDecorId,
+  type RoomDialog,
+  type RoomLevel,
+  type RoomObject,
+} from "@/content/room";
 import { relics } from "@/content/game";
 import { game, useGame } from "@/lib/gameStore";
 import { sfx } from "@/lib/audio";
 import { gsap, useGSAP } from "@/lib/gsap";
-import { Hatch, Rug, decor, roomArt } from "@/components/room/RoomArt";
-import Skeleton from "@/components/art/Skeleton";
+import { decor, roomArt } from "@/components/room/RoomArt";
 import Dialog from "@/components/ui/Dialog";
 import PhoneDialog from "@/components/room/PhoneDialog";
 import TvDialog from "@/components/room/TvDialog";
 import SageNetDialog from "@/components/room/SageNetDialog";
 import styles from "./SceneRoom.module.css";
 
-type Props = { reduced: boolean; onDescend: () => void };
+type Props = { reduced: boolean };
 
 type Bubble = { id: string; text: string; n: number };
 
+/** Placement as CSS variables: desktop (--x/--y/--w) and phone (--mx/--my/--mw). Hidden when null. */
+function placeVars(desktop: Placement | null, mobile: Placement | null) {
+  const d = desktop ?? { x: 0, y: 0, w: 0 };
+  const m = mobile ?? { x: 0, y: 0, w: 0 };
+  return {
+    "--x": d.x,
+    "--y": d.y,
+    "--w": d.w,
+    "--mx": m.x,
+    "--my": m.y,
+    "--mw": m.w,
+    // Things lower in the room stand in front.
+    "--z": Math.round(d.y) + 10,
+    "--mz": Math.round(m.y) + 10,
+  } as React.CSSProperties;
+}
+
+/** Which way captions/reactions open so they stay on screen and clear of the intro copy. */
+function edge(p: Placement, left: number, right: number) {
+  return p.x < left ? "left" : p.x + p.w > right ? "right" : undefined;
+}
+
+/** Wall-mounted decor drifts a little as you scroll (subtle parallax). */
+const PARALLAX: Partial<Record<RoomDecorId, number>> = { window: 1, photo: 0.6, shelf: 0.8, hanger: 1.2 };
+
+function DecorArt({ id }: { id: RoomDecorId }) {
+  if (id === "window")
+    return (
+      <div className={styles.window}>
+        <div className={styles.windowSky}>
+          <span className={styles.windowMoon} />
+          <span className={styles.windowHill} />
+        </div>
+        <span className={styles.curtainL} />
+        <span className={styles.curtainR} />
+      </div>
+    );
+  if (id === "photo")
+    return (
+      <figure className={styles.photo}>
+        <Image src="/art/briz-hood.jpg" alt="" width={640} height={640} sizes="(max-width: 699px) 14vw, 6vw" />
+      </figure>
+    );
+  if (id === "stairs-1" || id === "stairs-2") return decor.stairs;
+  return decor[id];
+}
+
+function Levels({ levels, which }: { levels: RoomLevel[]; which: "desktop" | "mobile" }) {
+  return (
+    <div className={styles.levels} data-layout={which} aria-hidden="true">
+      {levels.map((l, i) => (
+        <div key={i}>
+          <div className={styles.wainscot} style={{ top: `${l.wainscot}%`, height: `${l.floor - l.wainscot}%` }} />
+          <div
+            className={styles.floor}
+            data-last={i === levels.length - 1 || undefined}
+            style={{ top: `${l.floor}%`, height: `${l.end - l.floor}%` }}
+          />
+          {i < levels.length - 1 && <div className={styles.ledge} style={{ top: `${l.end}%` }} />}
+        </div>
+      ))}
+    </div>
+  );
+}
+
 /**
- * SCENES 3 + 4 — The living room, then something under the rug.
- * The room is pinned: the first stretch of scrolling is a deliberate pause to
- * explore; after that the rug slides aside, the hatch opens and we drop through.
+ * SCENE 3 — The living room.
+ * The room scrolls with the page: intro copy first, then a tall canvas that
+ * visitors explore at their own pace. Desktop is one wide room; phones get a
+ * split-level room in three staggered groups. Every object is placed and sized
+ * on its own (content/room.ts), so nothing shrinks to fit the screen.
  */
-export default function SceneRoom({ reduced, onDescend }: Props) {
+export default function SceneRoom({ reduced }: Props) {
   const root = useRef<HTMLElement>(null);
   const sceneRef = useRef<HTMLDivElement>(null);
   const state = useGame();
@@ -44,17 +120,12 @@ export default function SceneRoom({ reduced, onDescend }: Props) {
     return () => window.clearTimeout(t);
   }, [bubble]);
 
-  /** "Explore the room": bring the interactive scene into view and move focus into it. */
+  /** "Explore the room": bring the room to the top of the screen and move focus into it. */
   const exploreRoom = () => {
-    const section = root.current;
     const scene = sceneRef.current;
-    if (!section || !scene) return;
+    if (!scene) return;
     const navH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--nav-h")) || 64;
-    // While pinned, the whole room is on screen from the section's first scroll position.
-    // In the simplified layout, scroll until the scene sits just under the nav.
-    const top = reduced
-      ? scene.getBoundingClientRect().top + window.scrollY - navH
-      : section.getBoundingClientRect().top + window.scrollY;
+    const top = scene.getBoundingClientRect().top + window.scrollY - navH;
     window.scrollTo({ top, behavior: reduced ? "auto" : "smooth" });
     scene.focus({ preventScroll: true });
     scene.dataset.flash = "true";
@@ -98,33 +169,16 @@ export default function SceneRoom({ reduced, onDescend }: Props) {
         { opacity: 0, ease: "none", scrollTrigger: { trigger: root.current, start: "top 45%", end: "top top", scrub: true } },
       );
 
-      const tl = gsap.timeline({
-        defaults: { ease: "none" },
-        scrollTrigger: {
-          trigger: root.current,
-          start: "top top",
-          end: "+=230%",
-          pin: q("[data-anim='stage']")[0],
-          scrub: 0.6,
-          anticipatePin: 1,
-          invalidateOnRefresh: true,
-        },
+      // Subtle parallax: wall-mounted decor drifts against the scroll. Objects stay put,
+      // so every hotspot stays exactly on its drawing.
+      q("[data-speed]").forEach((el: HTMLElement) => {
+        const amount = Number(el.dataset.speed) * 28;
+        gsap.fromTo(
+          el,
+          { y: -amount },
+          { y: amount, ease: "none", scrollTrigger: { trigger: sceneRef.current, start: "top bottom", end: "bottom top", scrub: true } },
+        );
       });
-
-      // 0 → 0.38: a deliberate pause to explore. Then the floor starts glowing.
-      tl.to({}, { duration: 0.38 }, 0)
-        .fromTo(q("[data-anim='rug-glow']"), { opacity: 0 }, { opacity: 1, duration: 0.12 }, 0.3)
-        .to(q("[data-anim='down-hint']"), { opacity: 0, duration: 0.05 }, 0.42)
-        .to(q("[data-anim='rug']"), { xPercent: 46, yPercent: 8, rotate: -8, duration: 0.14, ease: "power2.inOut" }, 0.44)
-        .fromTo(q("[data-part='lid']"), { scaleY: 1 }, { scaleY: -0.3, duration: 0.08, ease: "power2.out" }, 0.58)
-        .fromTo(q("[data-anim='skeleton']"), { yPercent: 30, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 0.1, ease: "back.out(1.6)" }, 0.56)
-        .fromTo(q("[data-anim='skeleton'] [data-part='arm']"), { rotate: -14 }, { rotate: 6, duration: 0.05, yoyo: true, repeat: 3, svgOrigin: "118 186" }, 0.66)
-        .fromTo(q("[data-anim='rug-line']"), { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.07 }, 0.64)
-        .to(q("[data-anim='room-head']"), { opacity: 0, y: -20, duration: 0.06 }, 0.62)
-        // down we go
-        .to(q("[data-anim='rug-line']"), { opacity: 0, y: -10, duration: 0.05 }, 0.8)
-        .fromTo(q("[data-anim='hole']"), { opacity: 0, scale: 0.4 }, { opacity: 1, scale: 1, duration: 0.04 }, 0.82)
-        .to(q("[data-anim='hole']"), { scale: 34, duration: 0.14, ease: "power2.in" }, 0.85);
     },
     { scope: root, dependencies: [reduced], revertOnUpdate: true },
   );
@@ -141,144 +195,92 @@ export default function SceneRoom({ reduced, onDescend }: Props) {
       data-scene="room"
       data-lamp={lampOn ? "on" : "off"}
     >
-      <div className={styles.stage} data-anim="stage">
-        <div className={styles.veil} data-anim="veil" aria-hidden="true" />
-        <header className={styles.head} data-anim="room-head">
-          <p className="kicker">{roomCopy.kicker}</p>
-          <h2 id="room-title" className={styles.title}>
-            {roomCopy.title}
-          </h2>
-          <p className={styles.hint}>{roomCopy.hint}</p>
-          <div className={styles.headActions}>
-            <button type="button" className={styles.directoryButton} data-primary onClick={exploreRoom}>
-              {roomCopy.exploreLabel} <span aria-hidden="true">↓</span>
-            </button>
-            <button type="button" className={styles.directoryButton} onClick={() => setDirectoryOpen(true)}>
-              {roomCopy.listLabel}
-            </button>
-          </div>
-        </header>
+      <div className={styles.veil} data-anim="veil" aria-hidden="true" />
 
-        <div ref={sceneRef} id="room-scene" className={styles.canvasRow} role="group" aria-label={roomCopy.sceneLabel} tabIndex={-1}>
-          <div className={styles.canvas}>
-            <div className={styles.wall} aria-hidden="true" />
-            <div className={styles.wainscot} aria-hidden="true" />
-            <div className={styles.floor} aria-hidden="true" />
-
-            <div className={styles.window} aria-hidden="true">
-              <div className={styles.windowSky}>
-                <span className={styles.windowMoon} />
-                <span className={styles.windowHill} />
-              </div>
-              <span className={styles.curtainL} />
-              <span className={styles.curtainR} />
-            </div>
-
-            <figure className={styles.photo}>
-              <Image
-                src="/art/briz-hood.jpg"
-                alt="A small framed portrait of Briz the Sage in a hood"
-                width={640}
-                height={640}
-                sizes="(max-width: 699px) 18vw, 8vw"
-              />
-            </figure>
-
-            {(Object.keys(decor) as (keyof typeof decor)[]).map((k) => (
-              <div key={k} className={`${styles.decor} ${styles[`decor-${k}`]}`} aria-hidden="true">
-                {decor[k]}
-              </div>
-            ))}
-
-            <div className={styles.hatch} data-anim="hatch" aria-hidden="true">
-              <Hatch />
-            </div>
-            <div className={styles.rugGlow} data-anim="rug-glow" aria-hidden="true" />
-            <div className={styles.rug} data-anim="rug" aria-hidden="true">
-              <Rug />
-            </div>
-
-            {roomObjects.map((obj) => {
-              const Art = roomArt[obj.id];
-              const isNav = obj.action.type === "link";
-              const isDest = isNav || obj.action.type === "dialog";
-              const style = {
-                "--x": obj.desktop.x,
-                "--y": obj.desktop.y,
-                "--w": obj.desktop.w,
-                "--mx": obj.mobile.x,
-                "--my": obj.mobile.y,
-                "--mw": obj.mobile.w,
-                zIndex: Math.round(obj.desktop.y) + 10,
-              } as React.CSSProperties;
-              const extra = {
-                "data-id": obj.id,
-                // Near the top edge, captions and reactions open downward instead of up.
-                "data-top": obj.desktop.y < 32 || undefined,
-                "data-top-m": obj.mobile.y < 24 || undefined,
-                "data-dest": isDest || undefined,
-                "data-swing": obj.id === "clock" && swinging ? "true" : undefined,
-                "data-found": obj.id === "clock" && state.found.key ? "true" : undefined,
-              };
-              const inner = (
-                <>
-                  <Art />
-                  {isDest && <span className={styles.spark} aria-hidden="true" />}
-                  <span className={styles.caption} aria-hidden="true">
-                    {obj.caption}
-                  </span>
-                  {bubble?.id === obj.id && (
-                    <span key={bubble.n} className={styles.bubble} aria-hidden="true">
-                      {bubble.text}
-                    </span>
-                  )}
-                </>
-              );
-              return obj.action.type === "link" ? (
-                <Link key={obj.id} href={obj.action.href} className={styles.obj} style={style} aria-label={obj.label} {...extra}>
-                  {inner}
-                </Link>
-              ) : (
-                <button key={obj.id} type="button" className={styles.obj} style={style} aria-label={obj.label} onClick={() => act(obj)} {...extra}>
-                  {inner}
-                </button>
-              );
-            })}
-
-            <div className={styles.skeleton} data-anim="skeleton" aria-hidden="true">
-              <Skeleton pose="point-down" />
-            </div>
-            <div className={styles.lampLight} aria-hidden="true" />
-            <div className={styles.hole} data-anim="hole" aria-hidden="true" />
-          </div>
-        </div>
-
-        <div className={styles.foot}>
-          <div className={styles.rugLine} data-anim="rug-line">
-            <p>{rugCopy.line}</p>
-            <p className={styles.hatchCaption}>{rugCopy.hatchCaption}</p>
-          </div>
-          <a
-            href="#under-the-house"
-            className={styles.downHint}
-            data-anim="down-hint"
-            onClick={(e) => {
-              e.preventDefault();
-              onDescend();
-            }}
-          >
-            {roomCopy.nextHint} <span aria-hidden="true">↓</span>
-          </a>
-          <button type="button" className={`btn btn-teal ${styles.hatchButton}`} onClick={onDescend}>
-            {rugCopy.hatchLabel} <span aria-hidden="true">↓</span>
+      <header className={styles.head}>
+        <p className="kicker">{roomCopy.kicker}</p>
+        <h2 id="room-title" className={styles.title}>
+          {roomCopy.title}
+        </h2>
+        <p className={styles.hint}>{roomCopy.hint}</p>
+        <div className={styles.headActions}>
+          <button type="button" className={styles.directoryButton} data-primary onClick={exploreRoom}>
+            {roomCopy.exploreLabel} <span aria-hidden="true">↓</span>
+          </button>
+          <button type="button" className={styles.directoryButton} onClick={() => setDirectoryOpen(true)}>
+            {roomCopy.listLabel}
           </button>
         </div>
+      </header>
 
-        {/* Screen-reader announcement for object reactions */}
-        <p className="sr-only" aria-live="polite">
-          {bubble?.text ?? ""}
-        </p>
+      <div ref={sceneRef} id="room-scene" className={styles.scene} role="group" aria-label={roomCopy.sceneLabel} tabIndex={-1}>
+        <div className={styles.canvas}>
+          <Levels levels={roomLevels.desktop} which="desktop" />
+          <Levels levels={roomLevels.mobile} which="mobile" />
+
+          {roomDecor.map((d) => (
+            <div
+              key={d.id}
+              className={styles.decor}
+              data-id={d.id}
+              data-hide-desktop={!d.desktop || undefined}
+              data-hide-mobile={!d.mobile || undefined}
+              data-speed={PARALLAX[d.id]}
+              style={placeVars(d.desktop, d.mobile)}
+              aria-hidden="true"
+            >
+              <DecorArt id={d.id} />
+            </div>
+          ))}
+
+          {roomObjects.map((obj) => {
+            const Art = roomArt[obj.id];
+            const isDest = obj.action.type === "link" || obj.action.type === "dialog";
+            const extra = {
+              "data-id": obj.id,
+              "data-dest": isDest || undefined,
+              // Near the top of the room, captions and reactions open downward, away from the intro copy.
+              "data-top": obj.desktop.y < 30 || undefined,
+              "data-top-m": obj.mobile.y < 10 || undefined,
+              "data-edge": edge(obj.desktop, 12, 88),
+              "data-edge-m": edge(obj.mobile, 20, 80),
+              "data-swing": obj.id === "clock" && swinging ? "true" : undefined,
+              "data-found": obj.id === "clock" && state.found.key ? "true" : undefined,
+            };
+            const inner = (
+              <>
+                <Art />
+                <span className={styles.spark} aria-hidden="true" />
+                <span className={styles.caption} aria-hidden="true">
+                  {obj.caption}
+                </span>
+                {bubble?.id === obj.id && (
+                  <span key={bubble.n} className={styles.bubble} aria-hidden="true">
+                    {bubble.text}
+                  </span>
+                )}
+              </>
+            );
+            const style = placeVars(obj.desktop, obj.mobile);
+            return obj.action.type === "link" ? (
+              <Link key={obj.id} href={obj.action.href} className={styles.obj} style={style} aria-label={obj.label} {...extra}>
+                {inner}
+              </Link>
+            ) : (
+              <button key={obj.id} type="button" className={styles.obj} style={style} aria-label={obj.label} onClick={() => act(obj)} {...extra}>
+                {inner}
+              </button>
+            );
+          })}
+
+          <div className={styles.lampLight} aria-hidden="true" />
+        </div>
       </div>
+
+      {/* Screen-reader announcement for object reactions */}
+      <p className="sr-only" aria-live="polite">
+        {bubble?.text ?? ""}
+      </p>
 
       <Dialog open={directoryOpen} onClose={() => setDirectoryOpen(false)} title={roomCopy.directoryTitle}>
         <p className={styles.dirNote}>{roomCopy.directoryNote}</p>

@@ -556,6 +556,24 @@ export const decor = {
       </g>
     </svg>
   ),
+  /** A short staircase linking two levels of the split-level room (phones). */
+  stairs: (
+    <svg viewBox="0 0 100 130" aria-hidden="true" overflow="visible">
+      <g stroke={INK} strokeWidth="2.5" strokeLinejoin="round">
+        <path d="M0 0 L22 0 L98 118 L98 130 L74 130 L0 16 Z" fill="#3a2014" />
+        {[0, 1, 2, 3, 4].map((i) => (
+          <g key={i}>
+            <rect x={4 + i * 18} y={4 + i * 24} width="26" height="7" rx="1.5" fill="#a8693c" />
+            <rect x={4 + i * 18} y={11 + i * 24} width="26" height="17" fill="#6f3f39" />
+          </g>
+        ))}
+        <path d="M14 -18 L96 104" fill="none" stroke="#c99a5b" strokeWidth="4" strokeLinecap="round" />
+        {[0, 1, 2, 3].map((i) => (
+          <path key={i} d={`M${24 + i * 20} ${-3 + i * 30} L${24 + i * 20} ${14 + i * 28}`} stroke="#c99a5b" strokeWidth="3" />
+        ))}
+      </g>
+    </svg>
+  ),
   shelf: (
     <svg viewBox="0 0 160 70" aria-hidden="true">
       <g stroke={INK} strokeWidth="2.2" strokeLinejoin="round">

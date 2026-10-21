@@ -1,0 +1,210 @@
+/* The living-room floor, up close. Same planks as the room's floor, so the
+   two read as one continuous space. */
+.rugScene {
+  position: relative;
+  background: #3a2216;
+}
+
+.stage {
+  position: relative;
+  height: 100svh;
+  min-height: 520px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0) 20%, rgba(0, 0, 0, 0.45)),
+    repeating-linear-gradient(180deg, #4a2c1c 0 42px, #2e1a10 42px 47px);
+}
+
+/* Copy sits above the floor close-up, in normal flow. */
+.copy {
+  position: relative;
+  z-index: 2;
+  flex: none;
+  display: grid;
+  justify-items: center;
+  padding: calc(var(--nav-h) + 12px) 16px 8px;
+  text-align: center;
+}
+.copy > * {
+  grid-area: 1 / 1;
+}
+.downHint {
+  align-self: start;
+  min-height: 44px;
+  padding: 10px 16px;
+  font-family: var(--font-hand);
+  font-size: clamp(1.4rem, 3vw, 1.9rem);
+  line-height: 1.1;
+  color: var(--parchment);
+  text-decoration: none;
+  text-shadow: 2px 2px 0 var(--line);
+  animation: hintBob 2.4s ease-in-out infinite;
+}
+@keyframes hintBob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(4px);
+  }
+}
+/* Shares its spot with the hint; never let the (initially invisible) line swallow the hint's taps. */
+.rugLine {
+  pointer-events: none;
+  opacity: 0;
+  font-family: var(--font-display);
+  font-variation-settings: "SOFT" 100, "WONK" 1;
+  font-style: italic;
+  font-weight: 700;
+  font-size: clamp(1.4rem, 3.4vw, 2.3rem);
+  line-height: 1.15;
+  color: var(--teal-300);
+  text-shadow: 2px 2px 0 var(--line), 0 0 18px rgba(79, 179, 169, 0.6);
+}
+.hatchCaption {
+  margin-top: 4px;
+  font-family: var(--font-hand);
+  font-style: normal;
+  font-weight: 400;
+  font-size: clamp(1.15rem, 2.2vw, 1.5rem);
+  color: var(--parchment);
+  text-shadow: 1px 1px 0 var(--line);
+}
+
+/* The rug, the hatch and Baboo Baboo, scaled together in their own box. */
+.pitArea {
+  position: relative;
+  z-index: 1;
+  flex: 1 1 auto;
+  min-height: 0;
+  container-type: size;
+  display: grid;
+  place-items: center;
+}
+.pit {
+  position: relative;
+  width: min(100cqw, 160cqh, 1100px);
+  aspect-ratio: 16 / 10;
+}
+.pit > * {
+  position: absolute;
+  pointer-events: none;
+}
+.pit svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.rugGlow {
+  left: 5%;
+  top: 34%;
+  width: 90%;
+  height: 52%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(154, 219, 208, 0.7), rgba(79, 179, 169, 0.25) 55%, transparent);
+  opacity: 0;
+}
+.hatch {
+  left: 25%;
+  top: 43.6%;
+  width: 50%;
+}
+.rug {
+  left: 10%;
+  top: 40%;
+  width: 80%;
+  transform-origin: 50% 50%;
+}
+.skeleton {
+  left: 3%;
+  top: 4%;
+  width: 17%;
+  opacity: 0;
+}
+.hole {
+  left: 44%;
+  top: 50.4%;
+  width: 12%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle, #120d1c 0 52%, #1b3b3a 62%, #4fb3a9 70%, rgba(79, 179, 169, 0) 72%);
+  opacity: 0;
+  z-index: 5;
+  will-change: transform;
+}
+.pit :global(.hatch-seam) {
+  animation: seamGlow 1.8s ease-in-out infinite;
+}
+@keyframes seamGlow {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+.hatchButton {
+  display: none !important;
+}
+
+/* Phones: a taller close-up so the rug fills the width and sits mid-screen. */
+@media (max-width: 699px) {
+  .pit {
+    width: min(100cqw, 125cqh);
+    aspect-ratio: 4 / 5;
+  }
+  .rugGlow {
+    left: -5%;
+    top: 36%;
+    width: 110%;
+    height: 34%;
+  }
+  .rug {
+    left: -2%;
+    top: 42%;
+    width: 104%;
+  }
+  .hatch {
+    left: 17%;
+    top: 45%;
+    width: 66%;
+  }
+  .hole {
+    left: 40%;
+    top: 49%;
+    width: 20%;
+  }
+  .skeleton {
+    left: 4%;
+    top: 0;
+    width: 32%;
+  }
+}
+
+/* ---------- Simplified experience: the finished composition ---------- */
+:global(html[data-motion="reduced"]) .rug {
+  transform: translate(46%, 8%) rotate(-8deg);
+}
+:global(html[data-motion="reduced"]) .rugGlow,
+:global(html[data-motion="reduced"]) .skeleton,
+:global(html[data-motion="reduced"]) .rugLine {
+  opacity: 1;
+}
+:global(html[data-motion="reduced"]) .pit [data-part="lid"] {
+  transform: scaleY(-0.3);
+}
+:global(html[data-motion="reduced"]) .downHint {
+  display: none;
+}
+:global(html[data-motion="reduced"]) .hatchButton {
+  display: inline-flex !important;
+  align-self: center;
+  margin: 8px 0 max(24px, env(safe-area-inset-bottom));
+  position: relative;
+  z-index: 2;
+}
