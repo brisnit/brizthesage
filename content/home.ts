@@ -7,7 +7,8 @@
  */
 
 export const outsideCopy = {
-  kicker: "You found the house.",
+  /** Shown when a visitor opens the mailbox by the path. */
+  postcard: "You found the house. Now go inside.",
   /** Big hero lettering, one word per line. Short words (3 letters or fewer, like "THE") are drawn small and handwritten. */
   title: ["SAGE", "WORLD"],
   line: "There’s more beneath the surface.",

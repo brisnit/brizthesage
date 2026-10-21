@@ -353,18 +353,6 @@
   pointer-events: auto;
 }
 
-.kicker {
-  font-family: var(--font-hand);
-  font-size: clamp(1.3rem, 2.4vw, 1.9rem);
-  color: var(--plum-950);
-  background: var(--parchment);
-  border: 2px solid var(--line);
-  padding: 0 14px 2px;
-  border-radius: 999px;
-  rotate: -3deg;
-  margin-bottom: 0.4svh;
-}
-
 .title {
   --size: clamp(3.2rem, min(12.5vw, 13.5svh), 9.5rem);
   display: grid;

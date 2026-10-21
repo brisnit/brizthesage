@@ -150,7 +150,7 @@ export default function SceneOutside({ reduced, onEnter }: Props) {
           </button>
           {mailOpen && (
             <p className={styles.mailNote} role="status">
-              A postcard: “{outsideCopy.kicker} Now go inside.”
+              A postcard: “{outsideCopy.postcard}”
             </p>
           )}
           <div className={styles.doorLight} data-anim="door-light" aria-hidden="true" />
@@ -180,9 +180,6 @@ export default function SceneOutside({ reduced, onEnter }: Props) {
         </div>
 
         <div className={styles.titleBlock} data-anim="title">
-          <p className={styles.kicker} data-anim="intro-fade">
-            {outsideCopy.kicker}
-          </p>
           <h1 id="home-title" tabIndex={-1} className={styles.title} aria-label={outsideCopy.title.join(" ")}>
             {outsideCopy.title.map((word, w) => (
               <span key={word} className={styles.word} data-small={word.length <= 3 || undefined} aria-hidden="true">
