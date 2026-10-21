@@ -71,11 +71,26 @@ export const hints: string[] = [
 export const puzzleCopy = {
   title: "The House Remembers",
   intro:
-    "Three relics are hidden around the blue house. Find them, read what they tell you, then wake them in the right order.",
+    "The house has misplaced three things. Baboo Baboo remembers seeing them. His account changes slightly each time.",
+  /** Shown once at least one relic has been found. */
+  progress: "The house remembers a little more.",
   savedNote: "Your progress is saved in this browser, on this device only.",
+  hintInvite: "Need a nudge?",
   wrong: "Not quite. The house hums politely and waits.",
   missing: "The house is still missing something. Find all three relics first.",
-  solved: "The house remembers you.",
+  solved: "There you are.",
+  solvedLines: ["The house knew you’d find them.", "Baboo Baboo says he helped."],
+};
+
+/** Text drawn on the personalised Explorer Card. */
+export const explorerCardCopy = {
+  title: "SAGE WORLD",
+  subtitle: "EXPLORER",
+  /** Used when the visitor leaves the name blank. */
+  defaultName: "A Curious Visitor",
+  lines: ["Found the door.", "Followed the sound.", "Remembered the way back."],
+  /** Button that saves the card and the wallpapers. */
+  collect: "Collect your keepsakes.",
 };
 
 /**
@@ -134,9 +149,9 @@ export type Reward =
 
 export const reward: Reward = {
   kind: "download",
-  title: "Blue House Explorer kit",
+  title: "Take a little of the house with you.",
   description:
-    "Original wallpapers painted for this site, plus a personalised Explorer Card with your name on it.",
+    "Two original Sage World wallpapers, plus an Explorer Card with your name on it.",
   files: [
     {
       label: "Phone wallpaper",

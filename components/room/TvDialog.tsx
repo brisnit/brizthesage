@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Dialog from "@/components/ui/Dialog";
 import VideoShelf from "@/components/music/VideoShelf";
-import { videos } from "@/content/music";
+import { musicCopy, videos } from "@/content/music";
 import styles from "./RoomDialogs.module.css";
 
 /** The CRT television. Shows real videos from content/music.ts, or an honest empty state. */
@@ -18,11 +18,7 @@ export default function TvDialog({ open, onClose }: { open: boolean; onClose: ()
             <div className={styles.tvNoise} />
             <span className={styles.tvBars} />
           </div>
-          <p className={styles.tvHeadline}>No broadcasts yet.</p>
-          <p>
-            The TV is warmed up and waiting. When Briz releases videos, they’ll play right here and in the
-            Listening Room.
-          </p>
+          <p className={styles.tvHeadline}>{musicCopy.tvEmpty}</p>
           <Link className="btn btn-gold" href="/music">
             Go to the Listening Room
           </Link>

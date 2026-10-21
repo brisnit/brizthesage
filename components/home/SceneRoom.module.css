@@ -627,6 +627,15 @@
   text-shadow: 2px 2px 0 var(--line), 0 0 18px rgba(79, 179, 169, 0.6);
   opacity: 0;
 }
+.hatchCaption {
+  margin-top: 2px;
+  font-family: var(--font-hand);
+  font-style: normal;
+  font-weight: 400;
+  font-size: clamp(1.1rem, 2vw, 1.4rem);
+  color: var(--parchment);
+  text-shadow: 1px 1px 0 var(--line);
+}
 .downHint {
   position: absolute;
   top: 6px;
@@ -819,7 +828,16 @@
 :global(html[data-motion="reduced"]) .room [data-part="lid"] {
   transform: scaleY(-0.3);
 }
-:global(html[data-motion="reduced"]) .downHint {
+:global(html[data-motion="reduced"]) .hatchCaption {
+  margin-top: 2px;
+  font-family: var(--font-hand);
+  font-style: normal;
+  font-weight: 400;
+  font-size: clamp(1.1rem, 2vw, 1.4rem);
+  color: var(--parchment);
+  text-shadow: 1px 1px 0 var(--line);
+}
+.downHint {
   display: none;
 }
 :global(html[data-motion="reduced"]) .hatchButton {

@@ -3,7 +3,7 @@ import { artist } from "@/content/site";
 import { archivesCopy } from "@/content/lore";
 import styles from "./Archives.module.css";
 
-/** The factual section. Shows the real bio only when one has been written. */
+/** The factual section: the real biography and the artist portrait. */
 export default function RealBriz() {
   return (
     <section id="real-briz" className={styles.section} aria-labelledby="real-briz-title">
@@ -12,7 +12,7 @@ export default function RealBriz() {
           <div className={styles.portraitFrame}>
             <Image
               src="/art/briz-portrait.jpg"
-              alt="Briz the Sage in a hooded jacket with a backpack, standing in a dark blue forest beside a painted turquoise skeleton."
+              alt="Artist portrait of Briz the Sage in a hooded jacket with a backpack, standing in a dark blue forest beside Baboo Baboo, a turquoise cartoon skeleton."
               width={1600}
               height={1600}
               sizes="(max-width: 800px) 90vw, 460px"
@@ -27,21 +27,13 @@ export default function RealBriz() {
           <h2 id="real-briz-title" className={styles.h2Dark}>
             {archivesCopy.realTitle}
           </h2>
-          {artist.bio ? (
-            artist.bio.split(/\n{2,}/).map((para, i) => (
-              <p key={i} className={styles.bio}>
-                {para}
-              </p>
-            ))
-          ) : (
-            <div className={styles.placeholder}>
-              <span className="stamp">Sample</span>
-              <p className={styles.bio}>{archivesCopy.realPlaceholder}</p>
-              <p className={styles.small}>Edit <code>artist.bio</code> in content/site.ts.</p>
-            </div>
-          )}
+          {artist.bio.map((para, i) => (
+            <p key={i} className={styles.bio}>
+              {para}
+            </p>
+          ))}
           <p className={styles.small}>
-            Everything else in the Archives is house lore: made-up stories about the blue house, its skeleton, and its moon.
+            Everything else in the Archives is house lore: made-up stories about the blue house, Baboo Baboo, and the moon.
           </p>
         </div>
       </div>

@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Shop from "@/components/merch/Shop";
+import { shopCopy } from "@/content/merch";
 import SiteFooter from "@/components/ui/SiteFooter";
 import styles from "@/components/merch/Merch.module.css";
 
 export const metadata: Metadata = {
   title: "The Curiosity Shop",
-  description: "A cabinet of strange collectibles from the blue house. Design previews of upcoming BRIZ THE SAGE merch.",
+  description: "A few things you might want to take home: design previews of possible Briz the Sage merch.",
 };
 
 export default function MerchPage() {
@@ -14,19 +15,16 @@ export default function MerchPage() {
     <>
       <main className={styles.shop}>
         <header className={styles.intro}>
-          <p className="kicker">The Curiosity Shop</p>
-          <h1 className={styles.title}>Odd things, carefully kept.</h1>
-          <p className={styles.lede}>Some of these will exist one day. Some of them already rattle.</p>
+          <p className="kicker">{shopCopy.kicker}</p>
+          <h1 className={styles.title}>{shopCopy.title}</h1>
+          <p className={styles.lede}>{shopCopy.intro}</p>
         </header>
 
         <aside className={`paper ${styles.notice}`} aria-label="Shop status">
           <span className={styles.noticeIcon} aria-hidden="true">
             ✶
           </span>
-          <p>
-            <strong>The shop isn’t open yet.</strong> Everything here is a preview or coming soon. Nothing can be
-            purchased, and this site never asks for payment details.
-          </p>
+          <p>{shopCopy.notice}</p>
         </aside>
 
         <Shop />

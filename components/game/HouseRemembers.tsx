@@ -33,6 +33,7 @@ export default function HouseRemembers() {
       <h3 className={styles.h3}>
         Relics found: {count} of {relics.length}
       </h3>
+      {count > 0 && <p className={styles.progressLine}>{puzzleCopy.progress}</p>}
       <ul className={styles.shelf}>
         {relics.map((r) => {
           const found = Boolean(state.found[r.id]);
@@ -214,7 +215,7 @@ function Puzzle({ hintsShown }: { hintsShown: number }) {
         )}
         {hintsShown < hints.length && (
           <button type="button" className={styles.hintButton} onClick={() => game.showNextHint(hints.length)}>
-            {hintsShown === 0 ? "Need a hint?" : `Another hint (${hintsShown + 1} of ${hints.length})`}
+            {hintsShown === 0 ? puzzleCopy.hintInvite : `Another hint (${hintsShown + 1} of ${hints.length})`}
           </button>
         )}
       </div>

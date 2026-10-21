@@ -2,13 +2,13 @@
 
 import Image from "next/image";
 import { useState } from "react";
-import { merch, merchCategories, type MerchCategory, type MerchItem } from "@/content/merch";
+import { merch, merchCategories, shopCopy, type MerchCategory, type MerchItem } from "@/content/merch";
 import Dialog from "@/components/ui/Dialog";
 import MerchArt from "./MerchArt";
 import styles from "./Merch.module.css";
 
 const STATUS_LABEL: Record<MerchItem["status"], string> = {
-  preview: "Preview",
+  preview: shopCopy.previewLabel,
   "coming-soon": "Coming soon",
   available: "Available",
 };
@@ -52,7 +52,7 @@ export default function Shop() {
   return (
     <>
       <div className={styles.filters} role="group" aria-label="Filter by category">
-        {[{ id: "all" as const, label: "All" }, ...merchCategories].map((c) => (
+        {[{ id: "all" as const, label: "All" }, ...merchCategories.filter((c) => merch.some((m) => m.category === c.id))].map((c) => (
           <button
             key={c.id}
             type="button"
@@ -120,7 +120,7 @@ export default function Shop() {
                 </a>
               ) : (
                 <button type="button" className="btn" disabled>
-                  Not available yet
+                  {shopCopy.unavailable}
                 </button>
               )}
             </div>

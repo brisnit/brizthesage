@@ -23,6 +23,7 @@ const findSpots: Record<string, Spot> = {
   lantern: { x: 47, y: 34, w: 6, mx: 70, my: 36, mw: 15 },
   "door-2": { x: 26, y: 66, w: 7, mx: 18, my: 70, mw: 18 },
   "creature-2": { x: 72, y: 52, w: 14, mx: 58, my: 52, mw: 32 },
+  mushrooms: { x: 79, y: 72, w: 15, mx: 58, my: 76, mw: 36 },
 };
 
 function FindArt({ find }: { find: UndergroundFind }) {
@@ -37,6 +38,7 @@ function FindArt({ find }: { find: UndergroundFind }) {
     );
   if (find.kind === "creature") return <Tunnel hue={find.id === "creature-1" ? "#2a1734" : "#24706f"} />;
   if (find.id === "teacup") return <Teacup />;
+  if (find.id === "mushrooms") return <Mushrooms />;
   return <Lantern />;
 }
 
@@ -151,6 +153,9 @@ export default function SceneUnder({ reduced, onSurface }: Props) {
         <p className={`${styles.scrap} ${styles.scrapA}`} data-speed="-0.7" aria-hidden="true">
           {scraps[0]}
         </p>
+        <p className={`${styles.scrap} ${styles.scrapE}`} data-speed="-0.5" aria-hidden="true">
+          {scraps[4]}
+        </p>
       </div>
 
       {/* Stratum 2: buried records */}
@@ -167,15 +172,12 @@ export default function SceneUnder({ reduced, onSurface }: Props) {
             <RelicSpot relic="record" label="One record in the dirt is still spinning" size={64} className={styles.spinning} />
           </div>
         </div>
-        {finds(["door-1", "teacup"]).map((f) => (
+        {finds(["door-1", "teacup", "mushrooms"]).map((f) => (
           <Find key={f.id} find={f} open={open === f.id} onToggle={() => toggle(f.id)} />
         ))}
         <p className={`${styles.scrap} ${styles.scrapB}`} data-speed="-0.6" aria-hidden="true">
           {scraps[1]}
         </p>
-        <div className={styles.shroomsR} aria-hidden="true">
-          <Mushrooms />
-        </div>
         <div className={`${styles.artifact} ${styles.artMic}`} data-speed="-0.35" aria-hidden="true">
           <Artifact kind="mic" />
         </div>
@@ -203,6 +205,9 @@ export default function SceneUnder({ reduced, onSurface }: Props) {
         </p>
         <p className={`${styles.scrap} ${styles.scrapD}`} data-speed="-0.4" aria-hidden="true">
           {scraps[3]}
+        </p>
+        <p className={`${styles.scrap} ${styles.scrapF}`} data-speed="-0.55" aria-hidden="true">
+          {scraps[5]}
         </p>
         <div className={styles.shroomsL} aria-hidden="true">
           <Mushrooms tone="gold" />

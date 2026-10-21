@@ -2,17 +2,20 @@
  * Copy and discoveries for the homepage journey, "What’s down inside the blue house?"
  * Change any text here without touching the animation code in components/home.
  *
- * Underground tidbits are house FICTION unless marked `sample: true`, which
- * means "placeholder for a real Briz fact": they show a small "sample" stamp.
+ * Underground tidbits are house FICTION unless commented as a true fact.
+ * `sample: true` marks a placeholder and shows a small "sample" stamp.
  */
 
 export const outsideCopy = {
   /** Shown when a visitor opens the mailbox by the path. */
   postcard: "You found the house. Now go inside.",
-  /** Big hero lettering, one word per line. Short words (3 letters or fewer, like "THE") are drawn small and handwritten. */
-  title: ["SAGE", "WORLD"],
-  line: "There’s more beneath the surface.",
-  cta: "Scroll into the blue house",
+  /** Hero lettering, one line each. `small` lines are drawn small and handwritten. */
+  title: [{ text: "Welcome to", small: true }, { text: "Sage" }, { text: "World." }] as { text: string; small?: boolean }[],
+  line: "A little music. A little mystery. A lot beneath the surface.",
+  /** Primary invitation (scrolls into the house). */
+  cta: "Come on in.",
+  /** Small scroll cue. */
+  scrollCue: "Follow the sound.",
   listen: "Listen",
 };
 
@@ -27,11 +30,13 @@ export const roomCopy = {
   hint: "Things that glow do things.",
   directoryTitle: "Explore the room",
   directoryNote: "Same doors, fewer cobwebs.",
-  nextHint: "Something is glowing under the rug.",
+  /** Shown before the rug slides aside. */
+  nextHint: "It wasn’t glowing yesterday.",
 };
 
 export const rugCopy = {
   line: "Every house keeps something underneath.",
+  hatchCaption: "Mind the first step. And the next several.",
   /** Shown on the hatch button in simplified mode. */
   hatchLabel: "Open the hatch",
 };
@@ -63,7 +68,7 @@ export const undergroundFinds: UndergroundFind[] = [
     id: "teacup",
     kind: "artifact",
     label: "A buried teacup",
-    tidbit: "Still warm. Nobody knows whose it is. Nobody is asking.",
+    tidbit: "Still warm. Baboo Baboo says he doesn’t drink tea.",
   },
   {
     id: "creature-1",
@@ -75,20 +80,26 @@ export const undergroundFinds: UndergroundFind[] = [
     id: "door-2",
     kind: "door",
     label: "A tiny door with a mail slot",
-    tidbit: "Sample lore — a real fact about Briz goes here. Edit content/home.ts.",
-    sample: true,
+    // A true fact (not house fiction).
+    tidbit: "Briz’s music explores chill lo-fi, ambient, and alternative electronic sounds. There’s room to wander between them.",
   },
   {
     id: "lantern",
     kind: "artifact",
     label: "A lantern that never ran out",
-    tidbit: "The mushrooms down here hum. Nobody remembers tuning them.",
+    tidbit: "Left here by someone who expected to come back.",
+  },
+  {
+    id: "mushrooms",
+    kind: "artifact",
+    label: "A patch of humming mushrooms",
+    tidbit: "They found the harmony before anyone found the room.",
   },
   {
     id: "creature-2",
     kind: "creature",
     label: "Two eyes in the dark",
-    tidbit: "“The skeleton owes me three dollars.”",
+    tidbit: "“Baboo Baboo owes me three dollars.”",
   },
 ];
 
@@ -101,6 +112,8 @@ export const scraps: string[] = [
   "the moon is listening",
   "turn it over, side B",
   "dig a little deeper",
+  "someone saved you a seat",
+  "leave room for the strange",
 ];
 
 export const sanctuaryCopy = {
@@ -109,5 +122,5 @@ export const sanctuaryCopy = {
   line: "You came all this way. Put a record on.",
   music: "Enter the Listening Room",
   lore: "Open the Archives",
-  up: "Float back up",
+  up: "A little fresh air?",
 };

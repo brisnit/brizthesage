@@ -3,7 +3,7 @@
  *
  * Rules of the house:
  *  - Only add real releases, real links and real audio.
- *  - A `null` URL renders as "Link coming soon" (disabled), never a fake link.
+ *  - Only list platforms that have a real URL. Missing services stay hidden.
  *  - The mini-player only appears when at least one track has an `audioSrc`.
  */
 
@@ -13,12 +13,12 @@ export type StreamingPlatform =
   | "YouTube Music"
   | "Bandcamp"
   | "SoundCloud"
-  | "Tidal"
+  | "TIDAL"
   | "Amazon Music";
 
 export type StreamingLink = {
   platform: StreamingPlatform;
-  url: string | null;
+  url: string;
 };
 
 export type Track = {
@@ -34,12 +34,17 @@ export type Release = {
   title: string;
   /** "Album" | "EP" | "Single" | etc. null when not confirmed. */
   kind: string | null;
-  /** ISO date or a year. null when not confirmed. */
+  /** ISO date (YYYY-MM-DD) or a year. null when not confirmed. */
   releaseDate: string | null;
+  /** Artist credit exactly as the official listing shows it. */
+  credits: string;
+  /** Briz's role when it isn't his own release, e.g. "Featuring Briz the Sage". */
+  role?: string;
   artwork: { src: string; alt: string; width: number; height: number };
-  /** Short real description. null shows nothing. */
+  /** Short intro copy. null shows nothing. */
   description: string | null;
   tracks: Track[];
+  /** Only real, verified links. */
   links: StreamingLink[];
 };
 
@@ -49,39 +54,142 @@ export type Video = {
   youtubeId: string;
 };
 
-const comingSoonLinks = (): StreamingLink[] => [
-  { platform: "Spotify", url: null },
-  { platform: "Apple Music", url: null },
-  { platform: "YouTube Music", url: null },
-  { platform: "Bandcamp", url: null },
-  { platform: "SoundCloud", url: null },
-];
-
 /**
  * The first release is "featured" in the Listening Room.
- * "What Up World" is the title lettered on the supplied cover artwork;
- * every other field is unconfirmed and intentionally left empty.
+ * Every fact below was checked against the official Apple Music and Spotify
+ * listings (October 2026). Durations are as listed on Apple Music.
  */
 export const releases: Release[] = [
   {
     id: "what-up-world",
     title: "What Up World",
-    kind: null,
-    releaseDate: null,
+    kind: "Album",
+    releaseDate: "2023-10-05",
+    credits: "Briz the Sage",
     artwork: {
       src: "/art/what-up-world.jpg",
       alt: "What Up World cover: a hooded figure stands on a turquoise mossy world beneath a huge golden moon and pink clouds with faces.",
       width: 1600,
       height: 1600,
     },
+    description: "Step into What Up World. Let your mind wander. See what follows you home.",
+    tracks: [
+      { title: "This is Life", duration: "1:50", audioSrc: null },
+      { title: "Ambient Flight Module", duration: "2:56", audioSrc: null },
+      { title: "The Alchemist", duration: "2:42", audioSrc: null },
+      { title: "Kept Secrets", duration: "2:31", audioSrc: null },
+      { title: "Forbidden Fruits", duration: "2:10", audioSrc: null },
+      { title: "Between the Moon and Mars", duration: "3:40", audioSrc: null },
+      { title: "Boys Home", duration: "1:48", audioSrc: null },
+      { title: "Professional", duration: "3:05", audioSrc: null },
+    ],
+    links: [
+      { platform: "Spotify", url: "https://open.spotify.com/album/2Re9xKIHoLSe0NSVig6d5U" },
+      { platform: "Apple Music", url: "https://music.apple.com/us/album/what-up-world/1710648427" },
+    ],
+  },
+  {
+    id: "be-love",
+    title: "Be Love",
+    kind: "Single",
+    releaseDate: "2025-05-29",
+    // Spotify credits Briz the Sage and Celmer; Apple Music lists Briz the Sage only.
+    credits: "Briz the Sage, Celmer",
+    artwork: { src: "/art/releases/be-love.jpg", alt: "Be Love single cover", width: 600, height: 600 },
     description: null,
     tracks: [],
-    links: comingSoonLinks(),
+    links: [
+      { platform: "Spotify", url: "https://open.spotify.com/album/1dxurGA8rbOvru9EAudhrF" },
+      { platform: "Apple Music", url: "https://music.apple.com/us/album/be-love-single/1815467343" },
+    ],
+  },
+  {
+    id: "fame",
+    title: "Fame",
+    kind: "Single",
+    releaseDate: "2025-05-27",
+    credits: "Silk Panther, Briz the Sage, Andres Salomon",
+    artwork: { src: "/art/releases/fame.jpg", alt: "Fame single cover", width: 600, height: 600 },
+    description: null,
+    tracks: [],
+    links: [
+      { platform: "Spotify", url: "https://open.spotify.com/album/0dbcBn1CU3gRirxjJYNCGj" },
+      { platform: "Apple Music", url: "https://music.apple.com/us/album/fame-single/1812229985" },
+    ],
+  },
+  {
+    id: "trap-so-good",
+    title: "Trap So Good",
+    kind: "Single",
+    releaseDate: "2024-11-10",
+    credits: "Silk Panther, Briz the Sage, Andres Salomon",
+    artwork: { src: "/art/releases/trap-so-good.jpg", alt: "Trap So Good single cover", width: 600, height: 600 },
+    description: null,
+    tracks: [],
+    links: [{ platform: "Spotify", url: "https://open.spotify.com/album/0WsmLhJ02pJVk2Q819tjfC" }],
+  },
+  {
+    id: "carte-blanche",
+    title: "Carte Blanche",
+    kind: "Single",
+    releaseDate: "2024-05-01",
+    credits: "Silk Panther, Briz the Sage, Andres Salomon, Omar Lopez",
+    artwork: { src: "/art/releases/carte-blanche.jpg", alt: "Carte Blanche single cover", width: 600, height: 600 },
+    description: null,
+    tracks: [],
+    links: [
+      { platform: "Spotify", url: "https://open.spotify.com/album/25evVhJgU56a9nS9wDqsK2" },
+      { platform: "Apple Music", url: "https://music.apple.com/us/album/carte-blanche-single/1742815281" },
+    ],
+  },
+  {
+    id: "little-valentine",
+    title: "Little Valentine",
+    kind: "Single",
+    releaseDate: "2024-02-12",
+    credits: "Silk Panther, Briz the Sage, Andres Salomon, Omar Lopez",
+    artwork: { src: "/art/releases/little-valentine.jpg", alt: "Little Valentine single cover", width: 600, height: 600 },
+    description: null,
+    tracks: [],
+    links: [{ platform: "Spotify", url: "https://open.spotify.com/album/5eljOguAJMt77L2Cd1v76Z" }],
+  },
+  {
+    id: "fly-higher",
+    title: "Fly Higher",
+    kind: "Single",
+    releaseDate: "2023-12-04",
+    credits: "Andres Salomon",
+    role: "Featuring Briz the Sage",
+    artwork: { src: "/art/releases/fly-higher.jpg", alt: "Fly Higher single cover", width: 600, height: 600 },
+    description: null,
+    tracks: [],
+    links: [
+      { platform: "Spotify", url: "https://open.spotify.com/album/2ZB5wzxKsJ8sB7VEoxVXDd" },
+      { platform: "Apple Music", url: "https://music.apple.com/us/album/fly-higher-feat-briz-the-sage-single/1715761445" },
+    ],
   },
 ];
 
-/** Artist-level profiles (not tied to a single release). */
-export const artistProfiles: StreamingLink[] = comingSoonLinks();
+/** Artist-level profiles. Only verified links. */
+export const artistProfiles: StreamingLink[] = [
+  { platform: "Spotify", url: "https://open.spotify.com/artist/0mWrr8KIF1WVSt4VtU2N1L" },
+  { platform: "Apple Music", url: "https://music.apple.com/us/artist/briz-the-sage/1710579290" },
+  { platform: "TIDAL", url: "https://tidal.com/artist/42629137" },
+];
 
 /** Music videos. Empty = the TV and the Listening Room show an honest empty state. */
 export const videos: Video[] = [];
+
+/** Listening Room copy. */
+export const musicCopy = {
+  kicker: "Sage World",
+  title: "The Listening Room",
+  lede: "Pick a record. Stay a while.",
+  featuredKicker: "Now on the turntable",
+  profilesTitle: "Follow the sound",
+  crateTitle: "The record crate",
+  moreSlotTitle: "There’s more on the shelf.",
+  moreSlotNote: "We’ll get to it.",
+  tvTitle: "The television",
+  tvEmpty: "The television is between transmissions.",
+};

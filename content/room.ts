@@ -46,7 +46,7 @@ export const roomObjects: RoomObject[] = [
   {
     id: "bookcase",
     label: "Bookcase with a glowing book: go to Briz Lore",
-    caption: "A book is glowing. Rude not to look.",
+    caption: "A few things the house remembers.",
     action: { type: "link", href: "/briz-lore" },
     inDirectory: true,
     desktop: { x: 2.5, y: 24, w: 15 },
@@ -89,10 +89,10 @@ export const roomObjects: RoomObject[] = [
   {
     id: "sofa",
     label: "A worn velvet sofa",
-    caption: "Make yourself strange.",
+    caption: "Someone saved you a seat.",
     action: {
       type: "quip",
-      lines: ["You find 41 cents and a guitar pick.", "The cushion sighs.", "Make yourself strange."],
+      lines: ["Someone saved you a seat.", "You find 41 cents and a guitar pick.", "The cushion sighs."],
     },
     inDirectory: false,
     desktop: { x: 30, y: 47, w: 28 },
@@ -101,7 +101,7 @@ export const roomObjects: RoomObject[] = [
   {
     id: "tv",
     label: "CRT television: watch videos",
-    caption: "Static, mostly. Lean in anyway.",
+    caption: "Adjust the antenna. Lower your expectations.",
     action: { type: "dialog", dialog: "tv" },
     inDirectory: true,
     desktop: { x: 61, y: 40, w: 13 },
@@ -110,7 +110,7 @@ export const roomObjects: RoomObject[] = [
   {
     id: "record-player",
     label: "Record player: go to the Listening Room",
-    caption: "Drop the needle. Go to the music.",
+    caption: "Something worth turning over.",
     action: { type: "link", href: "/music" },
     inDirectory: true,
     desktop: { x: 75, y: 42, w: 12.5 },
@@ -128,7 +128,7 @@ export const roomObjects: RoomObject[] = [
   {
     id: "computer",
     label: "Old beige computer: log on to SageNet",
-    caption: "56k of pure mystery.",
+    caption: "You have one new mystery.",
     action: { type: "dialog", dialog: "computer" },
     inDirectory: true,
     desktop: { x: 88, y: 40, w: 11 },
@@ -137,7 +137,7 @@ export const roomObjects: RoomObject[] = [
   {
     id: "trunk",
     label: "A mysterious trunk: go to the Curiosity Shop (merch)",
-    caption: "Rattles when nobody touches it. Merch inside.",
+    caption: "Try something strange on.",
     action: { type: "link", href: "/merch" },
     inDirectory: true,
     desktop: { x: 82, y: 71, w: 13 },

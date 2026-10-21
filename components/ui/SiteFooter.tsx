@@ -15,22 +15,23 @@ export default function SiteFooter() {
           ))}
         </ul>
       </nav>
-      <ul className={styles.links} aria-label="Elsewhere">
-        {artist.socials.map((s) =>
-          s.url ? (
+      <p className={styles.bio}>{artist.shortBio}</p>
+      {artist.socials.length > 0 && (
+        <ul className={styles.links} aria-label="Elsewhere">
+          {artist.socials.map((s) => (
             <li key={s.label}>
               <a href={s.url} target="_blank" rel="noreferrer">
                 {s.label}
               </a>
             </li>
-          ) : (
-            <li key={s.label} className={styles.soon}>
-              {s.label} <span className="sr-only">(link coming soon)</span>
-              <span aria-hidden="true">· soon</span>
-            </li>
-          ),
-        )}
-      </ul>
+          ))}
+        </ul>
+      )}
+      {artist.contactEmail && (
+        <p>
+          <a href={`mailto:${artist.contactEmail}`}>{artist.contactEmail}</a>
+        </p>
+      )}
       <p className={styles.note}>The house is made up. The music is real.</p>
     </footer>
   );

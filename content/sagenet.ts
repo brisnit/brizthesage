@@ -1,6 +1,8 @@
 /**
  * SageNet: the fictional dial-up portal on the living-room computer.
- * Entirely fictional. Lore fragments are pulled from content/lore.ts.
+ * Guestbook entries are clearly fictional residents of the house.
+ * House field notes come from content/lore.ts; "About the Resident" uses the
+ * real short bio from content/site.ts.
  */
 
 export const sagenetCopy = {
@@ -10,15 +12,23 @@ export const sagenetCopy = {
     "Negotiating with the house…",
     "Handshake accepted (it was a bony hand)",
   ],
-  welcome: "Welcome to SageNet",
-  visitorLine: "You are visitor no.",
-  /** Fake, harmless counter shown for nostalgia. */
-  visitorNumber: "000777",
+  welcome: ["SAGENET", "A local connection to somewhere unusual.", "", "You are online.", "The house has been expecting company."],
+  menu: {
+    resident: "About the Resident",
+    notes: "House Field Notes",
+    guestbook: "Guestbook",
+    lostFound: "Lost & Found",
+    logOff: "Log Off, Stay Awhile",
+  },
   guestbook: [
-    { name: "mr_marrow", text: "first!!! (i live here)" },
-    { name: "the_moon", text: "nice acoustics. will return nightly." },
-    { name: "cloud_w_face", text: "stop looking at me. ok you can look a little." },
+    { name: "baboo_baboo", text: "who moved my record. you know which one." },
+    { name: "the_moon", text: "lovely sound tonight. left a little light outside." },
+    { name: "cloud_w_face", text: "i can see the roof from here. looks good." },
+    { name: "downstairs_neighbor", text: "bass sounds great down here. ceiling less great." },
+    { name: "house_admin", text: "Reminder: the guestbook is not an acceptable place to settle the three-dollar situation." },
   ],
-  hintFile: "Every relic carries a number. The phone is listening for them.",
-  under: "This page is under construction. It has been under construction since 1997.",
+  guestbookNote: "(Fictional residents. Signing is disabled.)",
+  /** Consistent with the real puzzle: the relic numbers, dialed in solution order, are the phone secret. */
+  lostFound: "Three relics are missing. Every relic carries a number. The phone is listening for them.",
+  lostFoundLink: "Open the Lost & Found cabinet",
 };

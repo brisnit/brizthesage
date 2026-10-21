@@ -2,6 +2,7 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 import { useGame } from "@/lib/gameStore";
+import { explorerCardCopy as card } from "@/content/game";
 import styles from "./HouseRemembers.module.css";
 
 const W = 900;
@@ -96,11 +97,11 @@ function draw(ctx: CanvasRenderingContext2D, opts: { name: string; date: string;
   ctx.font = `700 54px ${display}`;
   ctx.lineWidth = 10;
   ctx.strokeStyle = P.line;
-  ctx.strokeText("BLUE HOUSE", W / 2, 132);
-  ctx.fillText("BLUE HOUSE", W / 2, 132);
+  ctx.strokeText(card.title, W / 2, 132);
+  ctx.fillText(card.title, W / 2, 132);
   ctx.font = `700 30px ${body}`;
   ctx.fillStyle = P.ochre300;
-  ctx.fillText("E X P L O R E R", W / 2, 178);
+  ctx.fillText(card.subtitle.split("").join(" "), W / 2, 178);
 
   // Illustration window
   const ix = 80,
@@ -307,10 +308,7 @@ function draw(ctx: CanvasRenderingContext2D, opts: { name: string; date: string;
   ["I", "II", "III"].forEach((n, i) => ctx.fillText(n, relicXs[i], ry + 76));
 
   // Name
-  ctx.fillStyle = P.parchment;
-  ctx.font = `700 20px ${body}`;
-  ctx.fillText("THIS CARD CERTIFIES THAT", W / 2, 1000);
-  const name = opts.name.trim() || "A Curious Visitor";
+  const name = opts.name.trim() || card.defaultName;
   let size = 86;
   ctx.font = `700 ${size}px ${hand}`;
   while (ctx.measureText(name).width > W - 180 && size > 40) {
@@ -318,19 +316,19 @@ function draw(ctx: CanvasRenderingContext2D, opts: { name: string; date: string;
     ctx.font = `700 ${size}px ${hand}`;
   }
   ctx.fillStyle = P.ochre300;
-  ctx.fillText(name, W / 2, 1082);
+  ctx.fillText(name, W / 2, 1018);
   ctx.beginPath();
-  ctx.moveTo(140, 1102);
-  ctx.bezierCurveTo(350, 1092, 560, 1112, W - 140, 1100);
+  ctx.moveTo(140, 1038);
+  ctx.bezierCurveTo(350, 1028, 560, 1048, W - 140, 1036);
   ctx.strokeStyle = "rgba(243,231,204,0.5)";
   ctx.lineWidth = 2.5;
   ctx.stroke();
   ctx.fillStyle = P.parchment;
-  ctx.font = `400 italic 26px ${display}`;
-  ctx.fillText("went down inside the blue house, and the house remembers.", W / 2, 1146, W - 160);
-  ctx.font = `700 18px ${body}`;
+  ctx.font = `400 italic 27px ${display}`;
+  card.lines.forEach((line, i) => ctx.fillText(line, W / 2, 1080 + i * 34, W - 160));
+  ctx.font = `700 17px ${body}`;
   ctx.fillStyle = P.teal300;
-  ctx.fillText(`${opts.number}  ·  RELICS WOKEN ${opts.date.toUpperCase()}  ·  BRIZTHESAGE`, W / 2, 1192, W - 140);
+  ctx.fillText(`${opts.number}  ·  RELICS WOKEN ${opts.date.toUpperCase()}  ·  BRIZ THE SAGE`, W / 2, 1200, W - 140);
 
   // Grain
   for (let i = 0; i < 9000; i++) {
@@ -473,8 +471,10 @@ function drawRecord(ctx: CanvasRenderingContext2D) {
   ctx.stroke();
 }
 
-/** In-browser, personalised "Blue House Explorer" card. Nothing is uploaded anywhere. */
-export default function ExplorerCard() {
+type Keepsake = { href: string; filename: string };
+
+/** In-browser, personalised Sage World Explorer card. Nothing is uploaded anywhere. */
+export default function ExplorerCard({ keepsakes = [] }: { keepsakes?: Keepsake[] }) {
   const state = useGame();
   const [name, setName] = useState("");
   const [fontsReady, setFontsReady] = useState(false);
@@ -511,12 +511,27 @@ export default function ExplorerCard() {
       const a = document.createElement("a");
       a.href = url;
       const slug = (name.trim() || "explorer").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
-      a.download = `blue-house-explorer-${slug || "explorer"}.png`;
+      a.download = `sage-world-explorer-${slug || "explorer"}.png`;
       document.body.appendChild(a);
       a.click();
       a.remove();
       window.setTimeout(() => URL.revokeObjectURL(url), 4000);
-      setStatus("Card saved. Keep it somewhere dry.");
+      // Then the wallpapers, one after another (browsers dislike simultaneous downloads).
+      keepsakes.forEach((k, i) =>
+        window.setTimeout(() => {
+          const w = document.createElement("a");
+          w.href = k.href;
+          w.download = k.filename;
+          document.body.appendChild(w);
+          w.click();
+          w.remove();
+        }, 600 * (i + 1)),
+      );
+      setStatus(
+        keepsakes.length
+          ? "Your card and wallpapers are on their way. If your browser asks about multiple downloads, say yes."
+          : "Card saved. Keep it somewhere dry.",
+      );
     }, "image/png");
   };
 
@@ -530,7 +545,7 @@ export default function ExplorerCard() {
           height={H}
           className={styles.cardCanvas}
           role="img"
-          aria-label={`Blue House Explorer card for ${name.trim() || "A Curious Visitor"}, number ${number}, relics woken ${date}${state.secretCall ? ", with the Night Line stamp" : ""}.`}
+          aria-label={`Sage World Explorer card for ${name.trim() || card.defaultName}, number ${number}, relics woken ${date}${state.secretCall ? ", with the Night Line stamp" : ""}.`}
         />
         <div className={styles.explorerForm}>
           <label htmlFor={inputId} className={styles.fieldLabel}>
@@ -542,13 +557,13 @@ export default function ExplorerCard() {
             type="text"
             maxLength={28}
             autoComplete="nickname"
-            placeholder="A Curious Visitor"
+            placeholder={card.defaultName}
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
           <p className={styles.small}>Made in your browser. Your name never leaves this device.</p>
           <button type="button" className="btn btn-gold" onClick={download}>
-            Download card (PNG)
+            {card.collect}
           </button>
           <p className={styles.small} aria-live="polite">
             {status}

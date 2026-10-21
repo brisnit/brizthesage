@@ -4,24 +4,24 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import Dialog from "@/components/ui/Dialog";
 import { fragments } from "@/content/lore";
+import { artist } from "@/content/site";
 import { sagenetCopy } from "@/content/sagenet";
 import { isReducedMotion } from "@/lib/settings";
 import styles from "./RoomDialogs.module.css";
 
-type Page = "home" | "lore" | "guestbook" | "webring" | "hint";
+type Page = "welcome" | "resident" | "notes" | "guestbook" | "lostFound";
 
-const PAGES: { id: Page; label: string }[] = [
-  { id: "home", label: "Home" },
-  { id: "lore", label: "Lore" },
-  { id: "guestbook", label: "Guestbook" },
-  { id: "webring", label: "Webring" },
-  { id: "hint", label: "hint.txt" },
+const PAGES: { id: Exclude<Page, "welcome">; label: string }[] = [
+  { id: "resident", label: sagenetCopy.menu.resident },
+  { id: "notes", label: sagenetCopy.menu.notes },
+  { id: "guestbook", label: sagenetCopy.menu.guestbook },
+  { id: "lostFound", label: sagenetCopy.menu.lostFound },
 ];
 
 /** SageNet: a fictional dial-up portal holding fragments of house lore. */
 export default function SageNetDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
   const [booted, setBooted] = useState(0);
-  const [page, setPage] = useState<Page>("home");
+  const [page, setPage] = useState<Page>("welcome");
   const total = sagenetCopy.connecting.length;
 
   useEffect(() => {
@@ -34,14 +34,14 @@ export default function SageNetDialog({ open, onClose }: { open: boolean; onClos
     return () => {
       timers.forEach((t) => clearTimeout(t));
       setBooted(0);
-      setPage("home");
+      setPage("welcome");
     };
   }, [open, total]);
 
   const ready = booted >= total;
 
   return (
-    <Dialog open={open} onClose={onClose} title="SageNet 56k" variant="screen" className={styles.sagenet}>
+    <Dialog open={open} onClose={onClose} title="SageNet" variant="screen" className={styles.sagenet}>
       {!ready ? (
         <div className={styles.boot} aria-live="polite">
           {sagenetCopy.connecting.slice(0, booted).map((l) => (
@@ -70,32 +70,38 @@ export default function SageNetDialog({ open, onClose }: { open: boolean; onClos
                   </button>
                 </li>
               ))}
+              <li>
+                <button type="button" className={styles.termButton} onClick={onClose}>
+                  {sagenetCopy.menu.logOff}
+                </button>
+              </li>
             </ul>
           </nav>
           <div className={styles.portalBody} aria-live="polite">
-            {page === "home" && (
+            {page === "welcome" && (
+              <div className={styles.welcome}>
+                {sagenetCopy.welcome.map((l, i) => (i === 0 ? <p key={i} className={styles.marquee}>{l}</p> : <p key={i}>{l || "\u00a0"}</p>))}
+              </div>
+            )}
+            {page === "resident" && (
               <>
-                <p className={styles.marquee}>
-                  <span>★ {sagenetCopy.welcome} ★ best viewed at 3am ★ </span>
-                </p>
+                <p className={styles.fragTitle}>&gt; RESIDENT.TXT</p>
+                <p>{artist.shortBio}</p>
                 <p>
-                  {sagenetCopy.visitorLine} <span className={styles.counter}>{sagenetCopy.visitorNumber}</span>
+                  <Link href="/music">&gt;&gt; The Listening Room</Link>
                 </p>
-                <p className={styles.construction}>{sagenetCopy.under}</p>
-                <p>Pick a page above. Everything here is house fiction.</p>
               </>
             )}
-            {page === "lore" && (
+            {page === "notes" && (
               <ul className={styles.fragList}>
-                {fragments.map((f) => (
-                  <li key={f.id}>
-                    <p className={styles.fragTitle}>
-                      &gt; {f.title}
-                      {f.sample ? " [SAMPLE]" : f.fiction ? " [FICTION]" : " [TRUE]"}
-                    </p>
-                    <p>{f.body}</p>
-                  </li>
-                ))}
+                {fragments
+                  .filter((f) => f.fiction)
+                  .map((f) => (
+                    <li key={f.id}>
+                      <p className={styles.fragTitle}>&gt; {f.title}</p>
+                      <p>{f.body}</p>
+                    </li>
+                  ))}
               </ul>
             )}
             {page === "guestbook" && (
@@ -107,27 +113,17 @@ export default function SageNetDialog({ open, onClose }: { open: boolean; onClos
                   </li>
                 ))}
                 <li>
-                  <p>(Signing is disabled. The pen is a bone.)</p>
+                  <p>{sagenetCopy.guestbookNote}</p>
                 </li>
               </ul>
             )}
-            {page === "webring" && (
-              <ul className={styles.fragList}>
-                <li>
-                  <Link href="/music">&lt;&lt; The Listening Room</Link>
-                </li>
-                <li>
-                  <Link href="/merch">The Curiosity Shop</Link>
-                </li>
-                <li>
-                  <Link href="/briz-lore">The Archives &gt;&gt;</Link>
-                </li>
-              </ul>
-            )}
-            {page === "hint" && (
-              <pre className={styles.hintFile}>
-                {`HINT.TXT\n--------\n${sagenetCopy.hintFile}`}
-              </pre>
+            {page === "lostFound" && (
+              <>
+                <pre className={styles.hintFile}>{`LOST&FOUND.TXT\n--------------\n${sagenetCopy.lostFound}`}</pre>
+                <p>
+                  <Link href="/briz-lore#the-house-remembers">&gt;&gt; {sagenetCopy.lostFoundLink}</Link>
+                </p>
+              </>
             )}
           </div>
         </div>

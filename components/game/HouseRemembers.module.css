@@ -647,3 +647,16 @@
   font: inherit;
   font-size: 1.1rem;
 }
+
+.progressLine {
+  margin: -6px 0 14px;
+  font-family: var(--font-hand);
+  font-size: 1.35rem;
+  color: var(--teal-300);
+}
+.solvedLine {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: clamp(1.1rem, 2.4vw, 1.4rem);
+  text-align: center;
+}

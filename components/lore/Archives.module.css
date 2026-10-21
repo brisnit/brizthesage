@@ -359,3 +359,21 @@
   gap: 14px;
   padding-top: 40px;
 }
+
+.companion {
+  margin-top: 10px;
+  max-width: 60ch;
+  font-family: var(--font-hand);
+  font-size: 1.4rem;
+  line-height: 1.2;
+  color: var(--teal-300);
+}
+.companion strong {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ochre-300);
+  margin-right: 4px;
+}

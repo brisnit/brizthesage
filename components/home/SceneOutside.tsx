@@ -180,14 +180,20 @@ export default function SceneOutside({ reduced, onEnter }: Props) {
         </div>
 
         <div className={styles.titleBlock} data-anim="title">
-          <h1 id="home-title" tabIndex={-1} className={styles.title} aria-label={outsideCopy.title.join(" ")}>
-            {outsideCopy.title.map((word, w) => (
-              <span key={word} className={styles.word} data-small={word.length <= 3 || undefined} aria-hidden="true">
-                {word.split("").map((ch, i) => (
-                  <span key={i} className={styles.letter} data-letter style={{ "--i": i, "--w": w } as React.CSSProperties}>
-                    {ch}
+          <h1 id="home-title" tabIndex={-1} className={styles.title} aria-label={outsideCopy.title.map((l) => l.text).join(" ")}>
+            {outsideCopy.title.map((line, w) => (
+              <span key={line.text} className={styles.word} data-small={line.small || undefined} aria-hidden="true">
+                {line.small ? (
+                  <span className={styles.letter} data-letter>
+                    {line.text}
                   </span>
-                ))}
+                ) : (
+                  line.text.split("").map((ch, i) => (
+                    <span key={i} className={styles.letter} data-letter style={{ "--i": i, "--w": w } as React.CSSProperties}>
+                      {ch}
+                    </span>
+                  ))
+                )}
               </span>
             ))}
           </h1>
@@ -197,6 +203,12 @@ export default function SceneOutside({ reduced, onEnter }: Props) {
         </div>
 
         <div className={styles.cta} data-anim="cta">
+          <p className={styles.cue} data-anim="intro-fade">
+            {outsideCopy.scrollCue}{" "}
+            <span className={styles.cueArrow} aria-hidden="true">
+              ↓
+            </span>
+          </p>
           <button type="button" className="btn" onClick={onEnter} data-anim="intro-fade">
             {outsideCopy.cta}
             <svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true">

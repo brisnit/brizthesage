@@ -2,20 +2,21 @@
 
 import { useEffect, useRef, useState } from "react";
 import Dialog from "@/components/ui/Dialog";
-import { phoneCopy, phoneScript } from "@/content/phone";
+import { phoneCopy, phoneScript, type PhoneLine } from "@/content/phone";
 import { relics, secretCall, secretNumber } from "@/content/game";
 import { allFound, game, useGame, type GameState } from "@/lib/gameStore";
 import { sfx } from "@/lib/audio";
 import { isReducedMotion } from "@/lib/settings";
 import styles from "./RoomDialogs.module.css";
 
-type Line = { from: "house" | "you"; text: string };
+type Line = { from: "house" | "you" | "narration"; text: string };
 
+/** Game help after the advice line, always matching the real puzzle state. */
 function cluesFor(state: GameState): string[] {
   if (state.solved) return [secretCall.hintOnPhone];
   if (allFound(state)) return [phoneCopy.allFound];
   const missing = relics.filter((r) => !state.found[r.id]);
-  return ["Lost something? Here’s what the house whispers:", ...missing.map((r) => `“${r.riddle}”`)];
+  return [phoneCopy.missingIntro, ...missing.map((r) => `“${r.riddle}”`)];
 }
 
 const DIGITS = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"];
@@ -40,12 +41,13 @@ function PhoneCall({ onClose }: { onClose: () => void }) {
   const timers = useRef<number[]>([]);
   const logRef = useRef<HTMLOListElement>(null);
 
-  const say = (lines: string[], after?: () => void) => {
+  const say = (lines: PhoneLine[], after?: () => void) => {
     const step = isReducedMotion() ? 0 : 650;
-    lines.forEach((text, i) => {
+    lines.forEach((line, i) => {
+      const entry: Line = typeof line === "string" ? { from: "house", text: line } : { from: "narration", text: line.narration };
       timers.current.push(
         window.setTimeout(() => {
-          setLog((l) => [...l, { from: "house", text }]);
+          setLog((l) => [...l, entry]);
           if (i === lines.length - 1) {
             setBusy(false);
             after?.();
@@ -73,11 +75,11 @@ function PhoneCall({ onClose }: { onClose: () => void }) {
     setBusy(true);
     if (next === null) {
       setNode(null);
-      say(["Click."], () => window.setTimeout(onClose, isReducedMotion() ? 0 : 700));
+      say([{ narration: phoneCopy.hangUp }], () => window.setTimeout(onClose, isReducedMotion() ? 0 : 1600));
       return;
     }
     setNode(next);
-    say(next === "clues" ? cluesFor(state) : phoneScript[next].lines);
+    say(next === "advice" ? [...phoneScript.advice.lines, ...cluesFor(state)] : phoneScript[next].lines);
   };
 
   const dial = (d: string) => {
@@ -110,7 +112,7 @@ function PhoneCall({ onClose }: { onClose: () => void }) {
       <ol ref={logRef} className={styles.callLog} aria-live="polite">
         {log.map((line, i) => (
           <li key={i} data-from={line.from}>
-            <span className="sr-only">{line.from === "house" ? "The house says: " : "You: "}</span>
+            <span className="sr-only">{line.from === "house" ? "The voice says: " : line.from === "you" ? "You: " : ""}</span>
             {line.text}
           </li>
         ))}

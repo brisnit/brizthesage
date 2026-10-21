@@ -46,6 +46,11 @@ export default function RewardReveal() {
         <h3 ref={headingRef} tabIndex={-1} className={styles.rewardTitle}>
           {puzzleCopy.solved}
         </h3>
+        {puzzleCopy.solvedLines.map((l) => (
+          <p key={l} className={styles.solvedLine}>
+            {l}
+          </p>
+        ))}
         <RewardPanel />
         <p className={styles.phoneTease}>
           {state.secretCall ? (
@@ -77,7 +82,7 @@ function RewardPanel() {
               </li>
             ))}
           </ul>
-          {reward.explorerCard && <ExplorerCard />}
+          {reward.explorerCard && <ExplorerCard keepsakes={reward.files} />}
         </>
       )}
 

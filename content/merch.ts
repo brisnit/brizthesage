@@ -1,7 +1,9 @@
 /**
  * The Curiosity Shop.
  *
- * Every product below is a DEMONSTRATION PREVIEW (`status: "preview"`).
+ * Every product below is a DESIGN PREVIEW (`status: "preview"`).
+ * Set aside for now (art still exists in components/merch/MerchArt.tsx):
+ * vinyl, cassette, blueprint print, candle.
  * Nothing is for sale yet: no prices are charged, no inventory exists.
  *
  * To go live with a product:
@@ -48,6 +50,17 @@ export type MerchItem = {
   checkoutUrl: string | null;
 };
 
+/** Shop copy. */
+export const shopCopy = {
+  kicker: "Sage World",
+  title: "The Curiosity Shop",
+  intro: "A few things you might want to take home.",
+  previewLabel: "A possible future artifact.",
+  unavailable: "Not on the shelf yet.",
+  notice:
+    "Nothing here is for sale yet. These are design previews: no prices, no stock, and this site never asks for payment details.",
+};
+
 export const merch: MerchItem[] = [
   {
     id: "blue-house-hoodie",
@@ -55,21 +68,20 @@ export const merch: MerchItem[] = [
     category: "apparel",
     status: "preview",
     price: null,
-    tagline: "A hood for looking mysterious in forests.",
-    description:
-      "Design preview: a heavyweight hoodie with the blue house embroidered over the heart and the moon across the back.",
+    tagline: "Something warm for late nights and questionable shortcuts.",
+    description: "Design preview: a heavyweight hoodie with the blue house over the heart and the moon across the back.",
     details: ["Design preview only", "Sizes and pricing not announced", "Not available to order"],
     art: "hoodie",
     checkoutUrl: null,
   },
   {
-    id: "skeleton-friend-tee",
-    name: "Skeleton Friend Tee",
+    id: "good-side-tee",
+    name: "Baboo Baboo’s Good Side Tee",
     category: "apparel",
     status: "preview",
     price: null,
-    tagline: "He’s friendly. Mostly.",
-    description: "Design preview: the turquoise skeleton companion, waving, on a washed plum tee.",
+    tagline: "He dressed up for this. Technically.",
+    description: "Design preview: Baboo Baboo, the turquoise house companion, waving from a washed plum tee.",
     details: ["Design preview only", "Not available to order"],
     art: "tee",
     checkoutUrl: null,
@@ -78,72 +90,24 @@ export const merch: MerchItem[] = [
     id: "what-up-world-print",
     name: "What Up World Art Print",
     category: "prints",
-    status: "coming-soon",
+    status: "preview",
     price: null,
-    tagline: "The moon, the clouds, the whole world.",
-    description: "A print of the What Up World cover artwork. Format and paper still being decided.",
-    details: ["Coming soon", "Size, paper and price to be announced"],
+    tagline: "A small window into a much stranger place.",
+    description: "Design preview: a print of the What Up World cover artwork. Format and paper not decided.",
+    details: ["Design preview only", "Size, paper and pricing not announced"],
     art: "print-cover",
     checkoutUrl: null,
   },
   {
-    id: "blue-house-blueprint",
-    name: "Blue House Blueprint",
-    category: "prints",
-    status: "preview",
-    price: null,
-    tagline: "Floor plans, including the floor under the floor.",
-    description: "Design preview: a cyanotype-style cutaway of the blue house, from chimney to the listening chamber.",
-    details: ["Design preview only", "Not available to order"],
-    art: "print-house",
-    checkoutUrl: null,
-  },
-  {
-    id: "what-up-world-vinyl",
-    name: "What Up World on Vinyl",
-    category: "music",
-    status: "preview",
-    price: null,
-    tagline: "If it happens, it will spin.",
-    description: "Concept preview of a vinyl pressing. No pressing has been announced.",
-    details: ["Concept preview only", "No release announced"],
-    art: "vinyl",
-    checkoutUrl: null,
-  },
-  {
-    id: "basement-tapes",
-    name: "Basement Cassette",
-    category: "music",
-    status: "preview",
-    price: null,
-    tagline: "Found under the rug. Probably.",
-    description: "Concept preview of a cassette edition. Contents and release not announced.",
-    details: ["Concept preview only", "No release announced"],
-    art: "cassette",
-    checkoutUrl: null,
-  },
-  {
-    id: "moon-pin",
-    name: "Sleepy Moon Enamel Pin",
+    id: "sleepy-moon-pin",
+    name: "Sleepy Moon Pin",
     category: "oddities",
     status: "preview",
     price: null,
-    tagline: "It’s tired. Let it rest on your jacket.",
+    tagline: "For anyone keeping unusual hours.",
     description: "Design preview: a gold enamel crescent moon with one eye open.",
     details: ["Design preview only", "Not available to order"],
     art: "pin-moon",
-    checkoutUrl: null,
-  },
-  {
-    id: "listening-candle",
-    name: "Listening Room Candle",
-    category: "oddities",
-    status: "preview",
-    price: null,
-    tagline: "Smells like old records and rain on moss.",
-    description: "Concept preview of a candle for long listening sessions.",
-    details: ["Concept preview only", "Not available to order"],
-    art: "candle",
     checkoutUrl: null,
   },
 ];

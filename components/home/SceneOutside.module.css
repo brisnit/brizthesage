@@ -374,7 +374,8 @@
 .word[data-small] {
   font-family: var(--font-hand);
   font-weight: 700;
-  font-size: 0.42em;
+  font-size: 0.36em;
+  letter-spacing: 0.01em;
   line-height: 1;
   color: var(--ochre-300);
   -webkit-text-stroke: 0.08em var(--line);
@@ -399,6 +400,27 @@
   background: rgba(246, 221, 138, 0.82);
   padding: 2px 12px;
   border-radius: 8px;
+}
+
+.cue {
+  font-family: var(--font-hand);
+  font-size: 1.45rem;
+  line-height: 1;
+  color: var(--parchment);
+  text-shadow: 2px 2px 0 var(--line);
+}
+.cueArrow {
+  display: inline-block;
+  animation: cueBob 1.8s ease-in-out infinite;
+}
+@keyframes cueBob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(5px);
+  }
 }
 
 .cta {
@@ -434,6 +456,10 @@
   }
   .title {
     --size: clamp(3.2rem, min(19vw, 11svh), 6rem);
+  }
+  .line {
+    max-width: 19rem;
+    text-wrap: balance;
   }
   .cloudL {
     width: 62vw;
@@ -484,7 +510,12 @@
   }
   .cta :global(.btn) {
     font-size: 0.98rem;
-    padding: 0.6em 1em;
+    padding: 0.6em 1.2em;
+  }
+  .cue {
+    flex-basis: 100%;
+    text-align: center;
+    font-size: 1.25rem;
   }
   .doorLine {
     left: 30%;

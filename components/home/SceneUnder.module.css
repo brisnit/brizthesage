@@ -263,6 +263,17 @@
   rotate: -5deg;
 }
 
+.scrapE {
+  right: 9%;
+  top: 46%;
+  rotate: 5deg;
+}
+.scrapF {
+  left: 6%;
+  top: 44%;
+  rotate: -4deg;
+}
+
 .records {
   left: 55%;
   top: 22%;
@@ -533,6 +544,14 @@
   .scrapD {
     left: 30%;
     top: 88%;
+  }
+  .scrapE {
+    right: 4%;
+    top: 58%;
+  }
+  .scrapF {
+    left: 4%;
+    top: 40%;
   }
   .shroomsR,
   .shroomsL {

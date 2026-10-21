@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { artistProfiles, releases, videos } from "@/content/music";
+import { artistProfiles, musicCopy, releases, videos } from "@/content/music";
+import { artist } from "@/content/site";
 import { RecordShelf, StaticTv, Turntable } from "@/components/music/RoomArt";
 import StreamingLinks from "@/components/music/StreamingLinks";
 import VideoShelf from "@/components/music/VideoShelf";
@@ -11,7 +12,7 @@ import styles from "@/components/music/Music.module.css";
 
 export const metadata: Metadata = {
   title: "The Listening Room",
-  description: "Music by BRIZ THE SAGE: releases, streaming links and videos, in a dim room full of records.",
+  description: "Music by Briz the Sage: What Up World, singles, and where to listen.",
 };
 
 const formatDate = (d: string) =>
@@ -32,9 +33,9 @@ export default function MusicPage() {
 
         <header className={styles.intro}>
           <div>
-            <p className="kicker">The Listening Room</p>
-            <h1 className={styles.title}>Drop the needle.</h1>
-            <p className={styles.lede}>Records on the shelf, a lamp that hums, and a chair that’s already warm.</p>
+            <p className="kicker">{musicCopy.kicker}</p>
+            <h1 className={styles.title}>{musicCopy.title}</h1>
+            <p className={styles.lede}>{musicCopy.lede}</p>
           </div>
           <Turntable className={styles.turntable} spinClass={styles.spin} />
         </header>
@@ -54,7 +55,7 @@ export default function MusicPage() {
               />
             </div>
             <div className={`paper ${styles.notes}`}>
-              <p className={styles.notesKicker}>Now on the turntable</p>
+              <p className={styles.notesKicker}>{musicCopy.featuredKicker}</p>
               <h2 id="featured-title" className={styles.featuredTitle}>
                 {featured.title}
               </h2>
@@ -75,6 +76,7 @@ export default function MusicPage() {
                 </div>
               </dl>
               {featured.description && <p className={styles.description}>{featured.description}</p>}
+              <p className={styles.credits}>{featured.credits}</p>
 
               <h3 className={styles.subhead}>Tracklist</h3>
               {featured.tracks.length > 0 ? (
@@ -90,8 +92,12 @@ export default function MusicPage() {
                 <p className={styles.tbd}>The tracklist is still being written on the back of the sleeve.</p>
               )}
 
-              <h3 className={styles.subhead}>Listen on</h3>
-              <StreamingLinks links={featured.links} label={`Where to listen to ${featured.title}`} />
+              {featured.links.length > 0 && (
+                <>
+                  <h3 className={styles.subhead}>Listen on</h3>
+                  <StreamingLinks links={featured.links} label={`Where to listen to ${featured.title}`} />
+                </>
+              )}
             </div>
           </section>
         )}
@@ -100,15 +106,15 @@ export default function MusicPage() {
 
         <section className={styles.section} aria-labelledby="profiles-title">
           <h2 id="profiles-title" className={styles.sectionTitle}>
-            Follow the sound
+            {musicCopy.profilesTitle}
           </h2>
-          <p className={styles.sectionLede}>Where Briz lives on the internet, once the doors are open.</p>
+          <p className={styles.sectionLede}>{artist.shortBio}</p>
           <StreamingLinks links={artistProfiles} label="Briz the Sage artist profiles" />
         </section>
 
         <section className={styles.section} aria-labelledby="discography-title">
           <h2 id="discography-title" className={styles.sectionTitle}>
-            The record crate
+            {musicCopy.crateTitle}
           </h2>
           <ul className={styles.crate}>
             {[featured, ...rest].filter(Boolean).map((r) => (
@@ -123,23 +129,28 @@ export default function MusicPage() {
                 />
                 <p className={styles.crateTitle}>{r.title}</p>
                 <p className={styles.crateMeta}>
-                  {[r.kind, r.releaseDate && formatDate(r.releaseDate)].filter(Boolean).join(" · ") || "Details coming soon"}
+                  {[r.kind, r.releaseDate && new Date(r.releaseDate).getUTCFullYear()].filter(Boolean).join(" · ")}
                 </p>
+                <p className={styles.crateCredits}>
+                  {r.credits}
+                  {r.role && <span className={styles.crateRole}> · {r.role}</span>}
+                </p>
+                <StreamingLinks links={r.links} label={`Where to listen to ${r.title}`} small />
               </li>
             ))}
             <li className={`${styles.crateItem} ${styles.crateEmpty}`}>
               <div className={styles.emptySleeve} aria-hidden="true">
                 <span>?</span>
               </div>
-              <p className={styles.crateTitle}>More records are being dusted off</p>
-              <p className={styles.crateMeta}>Check back. The shelf is long.</p>
+              <p className={styles.crateTitle}>{musicCopy.moreSlotTitle}</p>
+              <p className={styles.crateMeta}>{musicCopy.moreSlotNote}</p>
             </li>
           </ul>
         </section>
 
         <section className={styles.section} aria-labelledby="videos-title">
           <h2 id="videos-title" className={styles.sectionTitle}>
-            The television
+            {musicCopy.tvTitle}
           </h2>
           {videos.length > 0 ? (
             <VideoShelf videos={videos} />
@@ -147,10 +158,7 @@ export default function MusicPage() {
             <div className={styles.emptyTv}>
               <StaticTv className={styles.tvArt} staticClass={styles.static} />
               <div>
-                <p className={styles.emptyTitle}>No broadcasts yet.</p>
-                <p className={styles.sectionLede}>
-                  The antenna is pointed at the moon. Videos will show up here when they’re ready.
-                </p>
+                <p className={styles.emptyTitle}>{musicCopy.tvEmpty}</p>
               </div>
             </div>
           )}

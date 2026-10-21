@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { archivesCopy, exhibits } from "@/content/lore";
+import { archivesCopy, companion, exhibits } from "@/content/lore";
 import styles from "./Archives.module.css";
 
 export default function Exhibits() {
@@ -10,6 +10,9 @@ export default function Exhibits() {
           {archivesCopy.exhibitsTitle}
         </h2>
         <p className={styles.note}>{archivesCopy.exhibitsNote}</p>
+        <p className={styles.companion}>
+          <strong>{archivesCopy.companionTitle}:</strong> {companion.intro}
+        </p>
       </div>
       <ul className={styles.exhibits}>
         {exhibits.map((ex, i) => (

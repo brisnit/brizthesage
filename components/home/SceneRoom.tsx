@@ -156,7 +156,7 @@ export default function SceneRoom({ reduced, onDescend }: Props) {
             <figure className={styles.photo}>
               <Image
                 src="/art/briz-hood.jpg"
-                alt="A framed photo of Briz the Sage in a hood"
+                alt="A small framed portrait of Briz the Sage in a hood"
                 width={640}
                 height={640}
                 sizes="(max-width: 699px) 18vw, 8vw"
@@ -230,9 +230,10 @@ export default function SceneRoom({ reduced, onDescend }: Props) {
         </div>
 
         <div className={styles.foot}>
-          <p className={styles.rugLine} data-anim="rug-line">
-            {rugCopy.line}
-          </p>
+          <div className={styles.rugLine} data-anim="rug-line">
+            <p>{rugCopy.line}</p>
+            <p className={styles.hatchCaption}>{rugCopy.hatchCaption}</p>
+          </div>
           <a
             href="#under-the-house"
             className={styles.downHint}

@@ -35,6 +35,17 @@
   font-size: 0.95rem;
   font-weight: 700;
 }
+.callLog li[data-from="narration"] {
+  justify-self: center;
+  max-width: 92%;
+  padding: 2px 8px;
+  background: transparent;
+  color: var(--ochre-300);
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 0.98rem;
+  text-align: center;
+}
 .typing {
   display: flex;
   gap: 5px;

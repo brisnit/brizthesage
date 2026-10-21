@@ -18,12 +18,14 @@ const caveat = Caveat({ subsets: ["latin"], variable: "--font-caveat", display: 
 const vt323 = VT323({ subsets: ["latin"], weight: "400", variable: "--font-vt323", display: "swap" });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(site.url),
-  title: { default: `${site.name} — The Blue House`, template: `%s · ${site.name}` },
+  // The domain isn't confirmed yet; set site.url to make preview URLs absolute.
+  metadataBase: site.url ? new URL(site.url) : undefined,
+  title: { default: site.title, template: `%s · ${site.name}` },
   description: site.description,
   openGraph: {
-    title: site.name,
+    title: site.title,
     description: site.description,
+    siteName: site.name,
     images: [{ url: "/og.jpg", width: 1200, height: 630, alt: "A golden moon over the turquoise world of What Up World" }],
     type: "website",
   },
