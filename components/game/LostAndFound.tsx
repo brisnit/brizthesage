@@ -5,12 +5,16 @@ import { relics } from "@/content/game";
 import { cabinetCopy, drawers } from "@/content/lore";
 import { game, useGame } from "@/lib/gameStore";
 import { sfx } from "@/lib/audio";
+import { huntCopy } from "@/content/hunt";
+import { hunt, useHunt } from "@/lib/hunt";
+import { WeatherSymbol } from "@/components/hunt/Symbols";
 import { RelicArt } from "@/components/art/Relics";
 import styles from "./HouseRemembers.module.css";
 
 /** Accessible alternative to hunting on the homepage: drawers that hold the relics. */
 export default function LostAndFound() {
   const state = useGame();
+  const trail = useHunt();
   const [open, setOpen] = useState<Record<string, boolean>>({});
   // Remembers which relics were taken from a drawer during this visit, for the message.
   const [justTaken, setJustTaken] = useState<Record<string, boolean>>({});
@@ -20,6 +24,8 @@ export default function LostAndFound() {
     const opening = !open[id];
     setOpen((o) => ({ ...o, [id]: opening }));
     sfx("thunk");
+    // The hidden trail: Baboo Baboo’s record is in the bottled weather (once the portrait has been noticed).
+    if (opening && d.id === "weather") hunt.reach(2);
     if (opening && d.relic && !state.found[d.relic]) {
       game.findRelic(d.relic);
       setJustTaken((t) => ({ ...t, [id]: true }));
@@ -58,6 +64,12 @@ export default function LostAndFound() {
                   ) : (
                     <p>{state.found[relic.id] ? `An empty velvet outline. You already have ${relic.name}.` : d.note}</p>
                   )
+                ) : d.id === "weather" && trail.stage >= 2 ? (
+                  <div className={styles.weatherFind}>
+                    <WeatherSymbol />
+                    <p>{huntCopy.weather.reveal}</p>
+                    <p className={styles.weatherTag}>“{huntCopy.weather.tag}”</p>
+                  </div>
                 ) : (
                   <p>{d.note}</p>
                 )}

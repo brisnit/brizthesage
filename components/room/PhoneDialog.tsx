@@ -6,6 +6,7 @@ import { phoneCopy, phoneScript, type PhoneLine } from "@/content/phone";
 import { relics, secretCall, secretNumber } from "@/content/game";
 import { allFound, game, useGame, type GameState } from "@/lib/gameStore";
 import { sfx } from "@/lib/audio";
+import { hunt } from "@/lib/hunt";
 import { isReducedMotion } from "@/lib/settings";
 import styles from "./RoomDialogs.module.css";
 
@@ -79,6 +80,13 @@ function PhoneCall({ onClose }: { onClose: () => void }) {
       return;
     }
     setNode(next);
+    if (next === "babooHint") {
+      // The newest hint for where the visitor actually is (each ask goes one step plainer).
+      const lines = hunt.nextHint();
+      say([lines[lines.length - 1]]);
+      return;
+    }
+    if (next === "babooForgetYes") hunt.reset();
     say(next === "advice" ? [...phoneScript.advice.lines, ...cluesFor(state)] : phoneScript[next].lines);
   };
 

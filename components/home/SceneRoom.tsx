@@ -16,6 +16,9 @@ import {
   type RoomObject,
 } from "@/content/room";
 import { relics } from "@/content/game";
+import { huntCopy } from "@/content/hunt";
+import { hunt, useHunt } from "@/lib/hunt";
+import Threshold from "@/components/hunt/Threshold";
 import { game, useGame } from "@/lib/gameStore";
 import { sfx } from "@/lib/audio";
 import { gsap, useGSAP } from "@/lib/gsap";
@@ -112,6 +115,11 @@ export default function SceneRoom({ reduced, onDescend }: Props) {
   const [bubble, setBubble] = useState<Bubble | null>(null);
   const [lampOn, setLampOn] = useState(true);
   const [swinging, setSwinging] = useState(false);
+  // The hidden trail (content/hunt.ts): the portrait’s glance, the record tag, the shy door.
+  const h = useHunt();
+  const [gaze, setGaze] = useState(false);
+  const [recordNote, setRecordNote] = useState(false);
+  const [crossing, setCrossing] = useState(false);
   const counts = useRef<Record<string, number>>({});
   const bubbleSeq = useRef(0);
 
@@ -154,9 +162,26 @@ export default function SceneRoom({ reduced, onDescend }: Props) {
       return;
     }
     const n = (counts.current[obj.id] = (counts.current[obj.id] ?? 0) + 1);
+    if (obj.id === "portrait") {
+      // A second look (or any look, once noticed) and the eyes glance at the computer.
+      if (n >= 2 || h.stage >= 1) {
+        hunt.reach(1);
+        setGaze(true);
+        window.setTimeout(() => setGaze(false), reduced ? 0 : 2600);
+        quip(obj.id, huntCopy.portrait.reveal);
+      } else {
+        quip(obj.id, huntCopy.portrait.firstLook);
+      }
+      return;
+    }
     if (obj.id === "lamp") {
-      setLampOn((v) => !v);
+      const turningOff = lampOn;
+      setLampOn(!lampOn);
       sfx("tick");
+      if (turningOff && h.stage >= 4) {
+        quip(obj.id, `Click. ${huntCopy.door.appears}`);
+        return;
+      }
     }
     if (a.type === "quip") {
       quip(obj.id, a.lines[(n - 1) % a.lines.length]);
@@ -291,13 +316,14 @@ export default function SceneRoom({ reduced, onDescend }: Props) {
                 "data-edge-m": edge(obj.mobile, 20, 80),
                 "data-swing": obj.id === "clock" && swinging ? "true" : undefined,
                 "data-found": obj.id === "clock" && state.found.key ? "true" : undefined,
+                "data-gaze": (obj.id === "portrait" && gaze) || undefined,
               };
               const inner = (
                 <>
                   <Art />
                   <span className={styles.spark} aria-hidden="true" />
                   <span className={styles.caption} aria-hidden="true">
-                    {obj.caption}
+                    {obj.id === "portrait" && h.stage >= 1 ? huntCopy.portrait.caption : obj.caption}
                   </span>
                   {bubble?.id === obj.id && (
                     <span key={bubble.n} className={styles.bubble} aria-hidden="true">
@@ -351,6 +377,33 @@ export default function SceneRoom({ reduced, onDescend }: Props) {
               </button>
             </div>
 
+            {h.stage >= 3 && (
+              <button
+                type="button"
+                className={styles.huntTag}
+                aria-label={huntCopy.recordTag.label}
+                onClick={() => {
+                  setRecordNote(true);
+                  hunt.reach(4);
+                }}
+              >
+                <span aria-hidden="true" />
+              </button>
+            )}
+            {h.stage >= 4 && !lampOn && (
+              <button
+                type="button"
+                className={styles.huntDoor}
+                aria-label={huntCopy.door.label}
+                onClick={() => {
+                  hunt.reach(5);
+                  setCrossing(true);
+                }}
+              >
+                <span className={styles.huntDoorKnob} aria-hidden="true" />
+              </button>
+            )}
+
             <div className={styles.lampLight} aria-hidden="true" />
           </div>
 
@@ -403,6 +456,15 @@ export default function SceneRoom({ reduced, onDescend }: Props) {
           <Link href="/briz-lore#the-house-remembers">The Archives can help.</Link>
         </p>
       </Dialog>
+
+      <Dialog open={recordNote} onClose={() => setRecordNote(false)} title={huntCopy.recordTag.title}>
+        {huntCopy.recordTag.lines.map((l, i) => (
+          <p key={i} className={i ? styles.huntInscription : undefined}>
+            {l}
+          </p>
+        ))}
+      </Dialog>
+      {crossing && <Threshold />}
 
       <PhoneDialog open={dialog === "phone"} onClose={() => setDialog(null)} />
       <TvDialog open={dialog === "tv"} onClose={() => setDialog(null)} />

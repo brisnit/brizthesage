@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { artist, navItems, site } from "@/content/site";
+import PilgrimReturn from "@/components/hunt/PilgrimReturn";
 import styles from "./SiteFooter.module.css";
 
 export default function SiteFooter() {
@@ -33,6 +34,7 @@ export default function SiteFooter() {
         </p>
       )}
       <p className={styles.note}>The house is made up. The music is real.</p>
+      <PilgrimReturn />
     </footer>
   );
 }

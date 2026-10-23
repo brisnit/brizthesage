@@ -6,6 +6,9 @@ import { approachCopy, outsideCopy } from "@/content/home";
 import { Branch, Cloud, Foliage, House, Moon, Mountains, Stars, TealPlanet } from "@/components/art/Outside";
 import Skeleton from "@/components/art/Skeleton";
 import RelicSpot from "@/components/game/RelicSpot";
+import Dialog from "@/components/ui/Dialog";
+import { huntCopy } from "@/content/hunt";
+import { hunt, useHunt } from "@/lib/hunt";
 import { gsap, useGSAP } from "@/lib/gsap";
 import styles from "./SceneOutside.module.css";
 
@@ -20,6 +23,8 @@ type Props = { reduced: boolean; onEnter: () => void };
 export default function SceneOutside({ reduced, onEnter }: Props) {
   const root = useRef<HTMLElement>(null);
   const [mailOpen, setMailOpen] = useState(false);
+  const [moonNote, setMoonNote] = useState(false);
+  const trail = useHunt();
 
   useGSAP(
     () => {
@@ -99,8 +104,20 @@ export default function SceneOutside({ reduced, onEnter }: Props) {
         <div className={styles.planet} data-anim="planet" aria-hidden="true">
           <TealPlanet />
         </div>
-        <div className={styles.moon} data-anim="moon" aria-hidden="true">
+        <div className={styles.moon} data-anim="moon">
           <Moon />
+          {/* The hidden trail: a small carved crater (only readable after the bottled weather). */}
+          <button
+            type="button"
+            className={styles.moonCrater}
+            aria-label={huntCopy.moon.label}
+            onClick={() => {
+              hunt.reach(3);
+              setMoonNote(true);
+            }}
+          >
+            <span aria-hidden="true" />
+          </button>
         </div>
         <div className={styles.cloudBackL} data-anim="cloud-back-l" aria-hidden="true">
           <Cloud tone="dusk" face={false} />
@@ -224,6 +241,17 @@ export default function SceneOutside({ reduced, onEnter }: Props) {
           </Link>
         </div>
       </div>
+      <Dialog open={moonNote} onClose={() => setMoonNote(false)} title={huntCopy.moon.title}>
+        {trail.stage >= 3 ? (
+          huntCopy.moon.inscription.map((l, i) => (
+            <p key={i} style={i ? { marginTop: 10, fontFamily: "var(--font-hand)", fontSize: "1.45rem", lineHeight: 1.25 } : undefined}>
+              {l}
+            </p>
+          ))
+        ) : (
+          <p>{huntCopy.moon.sealed}</p>
+        )}
+      </Dialog>
     </section>
   );
 }

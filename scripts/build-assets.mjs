@@ -34,6 +34,23 @@ for (const job of jobs) {
   console.log("wrote", job.out);
 }
 
+// Sanctuary: Briz’s face from the same portrait, as its own layer with a soft
+// oval edge, so the throne scene can place it inside the drawn hood.
+{
+  await mkdir("public/art/sanctum", { recursive: true });
+  const W = 480, H = 570;
+  const mask = Buffer.from(
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}"><defs><radialGradient id="g" cx="50%" cy="48%" r="50%"><stop offset="0.72" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient></defs><ellipse cx="${W / 2}" cy="${H * 0.48}" rx="${W * 0.5}" ry="${H * 0.5}" fill="url(#g)"/></svg>`,
+  );
+  await sharp(PORTRAIT)
+    .extract({ left: 1780, top: 300, width: 640, height: 760 })
+    .resize(W, H)
+    .composite([{ input: mask, blend: "dest-in" }])
+    .webp({ quality: 84, alphaQuality: 90 })
+    .toFile("public/art/sanctum/briz-face.webp");
+  console.log("wrote public/art/sanctum/briz-face.webp");
+}
+
 // Social preview: the top of the cover (moon + title lettering).
 await sharp(COVER)
   .extract({ left: 0, top: 120, width: 4213, height: 2212 })

@@ -660,3 +660,19 @@
   font-size: clamp(1.1rem, 2.4vw, 1.4rem);
   text-align: center;
 }
+
+/* The hidden trail’s clue in the bottled weather. */
+.weatherFind {
+  display: grid;
+  justify-items: start;
+  gap: 4px;
+}
+.weatherFind svg {
+  width: 76px;
+  height: auto;
+}
+.weatherTag {
+  font-family: var(--font-hand);
+  font-size: 1.35rem;
+  line-height: 1.2;
+}

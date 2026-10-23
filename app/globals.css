@@ -352,3 +352,22 @@ html[data-motion="reduced"] *::after {
   86% { transform: translateY(-6px) rotate(-4deg); }
   92% { transform: translateY(0); }
 }
+
+/* Printing the sanctuary keepsake: only the certificate. */
+@media print {
+  html.printing-keepsake body * {
+    visibility: hidden !important;
+  }
+  html.printing-keepsake .keepsake-print {
+    display: block !important;
+    visibility: visible !important;
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: auto;
+    margin: auto;
+  }
+  html.printing-keepsake .grain {
+    display: none;
+  }
+}

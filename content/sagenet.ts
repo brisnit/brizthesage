@@ -21,7 +21,8 @@ export const sagenetCopy = {
     logOff: "Log Off, Stay Awhile",
   },
   guestbook: [
-    { name: "baboo_baboo", text: "who moved my record. you know which one." },
+    // Part of the hidden trail (content/hunt.ts): points to the “Bottled weather” drawer.
+    { name: "baboo_baboo", text: "who moved my record. i left it where the house keeps its weather. you know which one." },
     { name: "the_moon", text: "lovely sound tonight. left a little light outside." },
     { name: "cloud_w_face", text: "i can see the roof from here. looks good." },
     { name: "downstairs_neighbor", text: "bass sounds great down here. ceiling less great." },

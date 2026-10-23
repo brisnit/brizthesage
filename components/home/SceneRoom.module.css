@@ -956,3 +956,122 @@
     right: clamp(12px, 3vw, 32px);
   }
 }
+
+/* ---------- The hidden trail ---------- */
+/* The portrait glances toward the old computer (right on desktop, down on phones). */
+.obj[data-gaze] :global(.portrait-eyes) {
+  animation: gaze 2.6s ease-in-out;
+}
+@keyframes gaze {
+  15%,
+  70% {
+    transform: translate(var(--gaze-x, 6px), var(--gaze-y, 0px));
+  }
+}
+@media (max-width: 699px) {
+  .obj[data-id="portrait"] {
+    --gaze-x: 0px;
+    --gaze-y: 5px;
+  }
+}
+
+/* A paper tag tucked under the record player (appears once the moon has spoken). */
+.huntTag {
+  position: absolute;
+  z-index: 70;
+  left: 81%;
+  top: 73.2%;
+  width: max(52px, 3.6%);
+  aspect-ratio: 1.1;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+.huntTag span {
+  position: absolute;
+  inset: 22% 10% 10% 14%;
+  background: linear-gradient(160deg, #f7eed8, #dcc89f);
+  border: 2px solid var(--line);
+  border-radius: 3px 8px 8px 3px;
+  rotate: -12deg;
+  box-shadow: 2px 3px 0 rgba(10, 5, 16, 0.5);
+}
+.huntTag span::before {
+  content: "";
+  position: absolute;
+  left: 8px;
+  top: 50%;
+  width: 6px;
+  height: 6px;
+  translate: 0 -50%;
+  border-radius: 50%;
+  border: 1.5px solid var(--line);
+}
+.huntTag:hover span,
+.huntTag:focus-visible span {
+  rotate: -4deg;
+  filter: drop-shadow(0 0 8px rgba(255, 217, 138, 0.8));
+}
+.huntInscription {
+  margin-top: 10px;
+  font-family: var(--font-hand);
+  font-size: 1.45rem;
+  line-height: 1.25;
+}
+
+/* The door that only shows in the dark: an outline glowing in the wallpaper. */
+.huntDoor {
+  position: absolute;
+  z-index: 25;
+  left: 54.6%;
+  top: 22%;
+  width: 6.2%;
+  min-width: 44px;
+  aspect-ratio: 1 / 2;
+  padding: 0;
+  border: 3px solid rgba(244, 207, 114, 0.85);
+  border-radius: 50% 50% 4px 4px / 26% 26% 4px 4px;
+  background: linear-gradient(to bottom, rgba(255, 217, 138, 0.12), rgba(255, 217, 138, 0.04));
+  box-shadow: 0 0 18px rgba(244, 207, 114, 0.55), inset 0 0 22px rgba(244, 207, 114, 0.25);
+  cursor: pointer;
+  animation: doorAppear 1.6s ease-out, doorPulse 3.2s 1.6s ease-in-out infinite;
+}
+.huntDoorKnob {
+  position: absolute;
+  right: 14%;
+  top: 56%;
+  width: 12%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--ochre-300);
+  box-shadow: 0 0 8px rgba(244, 207, 114, 0.9);
+}
+.huntDoor:hover,
+.huntDoor:focus-visible {
+  border-color: var(--moon);
+  box-shadow: 0 0 30px rgba(244, 207, 114, 0.85), inset 0 0 30px rgba(244, 207, 114, 0.4);
+}
+@keyframes doorAppear {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes doorPulse {
+  50% {
+    box-shadow: 0 0 28px rgba(244, 207, 114, 0.75), inset 0 0 26px rgba(244, 207, 114, 0.35);
+  }
+}
+
+@media (max-width: 699px) {
+  .huntTag {
+    left: 11%;
+    top: 87.2%;
+    width: 14%;
+  }
+  .huntDoor {
+    left: 85%;
+    top: 1.5%;
+    width: 13%;
+  }
+}

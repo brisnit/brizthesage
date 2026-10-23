@@ -18,6 +18,7 @@ const options = [
   { label: "What’s downstairs?", next: "downstairs" },
   { label: "Is Baboo Baboo here?", next: "baboo" },
   { label: "Any advice?", next: "advice" },
+  { label: "Can Baboo Baboo help me find something?", next: "babooHint" },
   { label: "Hang up", next: null },
 ];
 const without = (id: string) => options.filter((o) => o.next !== id);
@@ -31,6 +32,23 @@ export const phoneScript: Record<string, PhoneNode> = {
   downstairs: { lines: ["Depends how far you go."], options: without("downstairs") },
   baboo: { lines: ["Listen for the tapping. He thinks he’s being quiet."], options: without("baboo") },
   advice: { lines: ["Listen first. Open a few drawers. And leave the porch light on."], options: without("advice") },
+  // Baboo Baboo’s hints for the hidden trail: the lines come from content/hunt.ts, based on real progress.
+  babooHint: {
+    lines: [],
+    options: [
+      { label: "Ask for another hint", next: "babooHint" },
+      { label: "Ask him to forget the trail", next: "babooForget" },
+      ...without("babooHint"),
+    ],
+  },
+  babooForget: {
+    lines: ["“Forget? Everything? The portrait, the weather, the moon? Say yes and I’ll scramble it.”"],
+    options: [
+      { label: "Yes, forget the trail", next: "babooForgetYes" },
+      { label: "Never mind", next: "babooHint" },
+    ],
+  },
+  babooForgetYes: { lines: ["“Done. It never happened.” (It did. But the trail starts fresh now.)"], options: without("babooHint") },
 };
 
 export const phoneCopy = {

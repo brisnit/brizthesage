@@ -151,6 +151,20 @@ Change `reward` in `content/game.ts`. The `Reward` type already supports:
 
 ---
 
+## A hidden room (spoiler-light)
+
+There is a secret sanctuary reachable only by exploring the house. It isn’t in the navigation, the room list, or any sitemap, and it is marked `noindex`. The trail, every clue, Baboo Baboo’s hints and the sanctuary copy live in `content/hunt.ts` (read that file for the solution); progress is saved per browser under its own key (`lib/hunt.ts`), separate from the relic game. Pilgrims who found it get a tiny gold ear in the footer to return; the sanctuary and the phone both offer a reset. It’s an Easter egg, not a lock: never put anything valuable behind it.
+
+**Ask the Sage** (`app/api/sage/route.ts`) is an AI character labelled “An imaginative AI version of Briz the Sage.” Without credentials it shows authored “House tales” and offers no free-text box.
+
+- **Enable it:** set `ANTHROPIC_API_KEY` in the host’s environment variables (Vercel → Project → Settings → Environment Variables) and redeploy. Optional: `SAGE_MODEL` (default `claude-opus-5-5`).
+- **Costs and limits:** answers are capped at 1,500 output tokens (with low effort), questions at 500 characters, context at the last 8 turns. Rate limits default to 6 per minute and 40 per day per visitor, and 400 per day overall (`SAGE_PER_MINUTE`, `SAGE_PER_DAY`, `SAGE_GLOBAL_PER_DAY`). These live in server memory (per instance, reset on deploy), so **also set a monthly spend limit in the Anthropic Console**.
+- **Safety and privacy:** no tools are attached; visitor text is treated as untrusted; facts come only from `lib/sage/knowledge.ts`, which is built from the site’s verified content. Conversations are not stored or logged (only a failure *type* is logged). If a request is declined, Anthropic’s server-side fallback retries it on a recommended model.
+- **Voice:** optional read-aloud uses the browser’s built-in generic synthetic voice, only when the visitor turns it on.
+- **Local testing without a key:** `SAGE_PROVIDER=mock npm start` streams canned answers (a question containing `#fail` fails midway). Never set this in production.
+
+Throne artwork status and image-generation prompts: `docs/sanctum-artwork.md`.
+
 ## Accessibility and performance
 
 - The skip link, semantic landmarks and headings, and real `<a>`/`<button>` controls with descriptive labels are all in place. Focus outlines are visible.
