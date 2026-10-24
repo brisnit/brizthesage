@@ -1,12 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { sanctuaryCopy, scraps, undergroundCopy, undergroundFinds, type UndergroundFind } from "@/content/home";
 import { Artifact, BuriedRecords, Ceiling, Lantern, Mushrooms, Roots, Sanctuary, Stones, Strata, Teacup, Tunnel } from "@/components/art/Underground";
 import Skeleton from "@/components/art/Skeleton";
 import RelicSpot from "@/components/game/RelicSpot";
 import { gsap, useGSAP } from "@/lib/gsap";
+import { discovery, useDiscovery, useSheetMode } from "@/lib/discovery";
 import styles from "./SceneUnder.module.css";
 
 type Props = { reduced: boolean; onSurface: () => void };
@@ -42,19 +43,32 @@ function FindArt({ find }: { find: UndergroundFind }) {
   return <Lantern />;
 }
 
-function Find({ find, open, onToggle }: { find: UndergroundFind; open: boolean; onToggle: () => void }) {
+/**
+ * One discovery. On phones and tablets its response opens in the shared bottom
+ * sheet (rendered outside this parallax scene); on desktop it opens as a bubble
+ * beside it, aligned away from the screen edge.
+ */
+function Find({ find, open, sheet, onToggle }: { find: UndergroundFind; open: boolean; sheet: boolean; onToggle: (el: HTMLElement) => void }) {
   const spot = findSpots[find.id];
   const id = `find-${find.id}`;
+  const edge = spot.x < 20 ? "left" : spot.x + spot.w > 80 ? "right" : undefined;
+  const tidbitRef = useRef<HTMLDivElement>(null);
+  // Desktop bubble: if it opens below the fold (or under the header), bring it into view.
+  useEffect(() => {
+    if (open && !sheet) tidbitRef.current?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+  }, [open, sheet]);
   return (
-    <div className={styles.find} style={vars(spot)} data-kind={find.kind} data-open={open}>
-      <button type="button" className={styles.findButton} aria-expanded={open} aria-controls={id} onClick={onToggle}>
+    <div className={styles.find} style={vars(spot)} data-kind={find.kind} data-id={find.id} data-open={open} data-edge={edge}>
+      <button type="button" className={styles.findButton} aria-expanded={open} aria-controls={sheet ? undefined : id} onClick={(e) => onToggle(e.currentTarget)}>
         <FindArt find={find} />
         <span className="sr-only">{find.label}</span>
       </button>
-      <div id={id} className={styles.tidbit} hidden={!open}>
-        {find.sample && <span className={`stamp ${styles.sample}`}>sample</span>}
-        <p>{find.tidbit}</p>
-      </div>
+      {!sheet && (
+        <div id={id} ref={tidbitRef} className={styles.tidbit} hidden={!open}>
+          {find.sample && <span className={`stamp ${styles.sample}`}>sample</span>}
+          <p>{find.tidbit}</p>
+        </div>
+      )}
     </div>
   );
 }
@@ -67,14 +81,20 @@ function Find({ find, open, onToggle }: { find: UndergroundFind; open: boolean; 
 export default function SceneUnder({ reduced, onSurface }: Props) {
   const root = useRef<HTMLElement>(null);
   const [open, setOpen] = useState<string | null>(null);
+  const sheet = useSheetMode();
+  const shown = useDiscovery();
   const finds = (ids: string[]) => undergroundFinds.filter((f) => ids.includes(f.id));
 
   useGSAP(
     () => {
       if (reduced) return;
       const q = gsap.utils.selector(root);
+      // Phones: readable things (scraps, the record) stay put and decoration drifts only a
+      // little, so nothing slides into text or controls partway through the scroll.
+      const phone = window.matchMedia("(max-width: 699px)").matches;
       q("[data-speed]").forEach((el: HTMLElement) => {
-        const speed = Number(el.dataset.speed);
+        if (phone && el.closest("[data-flow]")) return;
+        const speed = Number(el.dataset.speed) * (phone ? 0.3 : 1);
         gsap.fromTo(
           el,
           { y: () => -speed * window.innerHeight * 0.25 },
@@ -107,7 +127,18 @@ export default function SceneUnder({ reduced, onSurface }: Props) {
     { scope: root, dependencies: [reduced], revertOnUpdate: true },
   );
 
-  const toggle = (id: string) => setOpen((v) => (v === id ? null : id));
+  const toggle = (f: UndergroundFind, el: HTMLElement) => {
+    if (sheet) {
+      setOpen(null);
+      discovery.toggle({ key: `under:${f.id}`, title: f.label, lines: [f.tidbit], stamp: f.sample ? "sample" : undefined, anchor: el });
+    } else {
+      discovery.hide();
+      setOpen((v) => (v === f.id ? null : f.id));
+    }
+  };
+  const isOpen = (id: string) => (sheet ? shown?.key === `under:${id}` : open === id);
+  const findList = (ids: string[]) =>
+    finds(ids).map((f) => <Find key={f.id} find={f} sheet={sheet} open={isOpen(f.id)} onToggle={(el) => toggle(f, el)} />);
 
   return (
     <section ref={root} id="under-the-house" className={styles.under} aria-labelledby="under-title" data-scene="under" tabIndex={-1}>
@@ -139,7 +170,7 @@ export default function SceneUnder({ reduced, onSurface }: Props) {
         <div className={styles.stonesFar} data-speed="0.4" aria-hidden="true">
           <Stones />
         </div>
-        <div className={styles.entryText}>
+        <div className={styles.entryText} data-flow>
           <p className={styles.depth} data-reveal>
             {undergroundCopy.depthMarkers[0]}
           </p>
@@ -150,34 +181,38 @@ export default function SceneUnder({ reduced, onSurface }: Props) {
             {undergroundCopy.intro}
           </p>
         </div>
-        <p className={`${styles.scrap} ${styles.scrapA}`} data-speed="-0.7" aria-hidden="true">
-          {scraps[0]}
-        </p>
-        <p className={`${styles.scrap} ${styles.scrapE}`} data-speed="-0.5" aria-hidden="true">
-          {scraps[4]}
-        </p>
+        <div className={styles.scraps} data-flow>
+          <p className={`${styles.scrap} ${styles.scrapA}`} data-speed="-0.7" aria-hidden="true">
+            {scraps[0]}
+          </p>
+          <p className={`${styles.scrap} ${styles.scrapE}`} data-speed="-0.5" aria-hidden="true">
+            {scraps[4]}
+          </p>
+        </div>
       </div>
 
       {/* Stratum 2: buried records */}
       <div className={styles.block} data-block="dig">
-        <p className={`${styles.depth} ${styles.depthSide}`} data-reveal>
+        <p className={`${styles.depth} ${styles.depthSide}`} data-reveal data-flow>
           {undergroundCopy.depthMarkers[1]}
         </p>
         <div className={styles.rootsTop} data-speed="0.2" aria-hidden="true">
           <Roots variant={1} />
         </div>
-        <div className={styles.records} data-speed="-0.15">
+        <div className={styles.records} data-speed="-0.15" data-flow>
           <BuriedRecords />
           <div className={styles.relicRecord}>
             <RelicSpot relic="record" label="One record in the dirt is still spinning" size={64} className={styles.spinning} />
           </div>
         </div>
-        {finds(["door-1", "teacup", "mushrooms"]).map((f) => (
-          <Find key={f.id} find={f} open={open === f.id} onToggle={() => toggle(f.id)} />
-        ))}
-        <p className={`${styles.scrap} ${styles.scrapB}`} data-speed="-0.6" aria-hidden="true">
-          {scraps[1]}
-        </p>
+        <div className={styles.findsRow} data-flow>
+          {findList(["door-1", "teacup", "mushrooms"])}
+        </div>
+        <div className={styles.scraps} data-flow>
+          <p className={`${styles.scrap} ${styles.scrapB}`} data-speed="-0.6" aria-hidden="true">
+            {scraps[1]}
+          </p>
+        </div>
         <div className={`${styles.artifact} ${styles.artMic}`} data-speed="-0.35" aria-hidden="true">
           <Artifact kind="mic" />
         </div>
@@ -194,21 +229,23 @@ export default function SceneUnder({ reduced, onSurface }: Props) {
 
       {/* Stratum 3: tunnels */}
       <div className={styles.block} data-block="tunnels">
-        <p className={`${styles.depth} ${styles.depthRight}`} data-reveal>
+        <p className={`${styles.depth} ${styles.depthRight}`} data-reveal data-flow>
           {undergroundCopy.depthMarkers[2]}
         </p>
-        {finds(["creature-1", "lantern", "door-2", "creature-2"]).map((f) => (
-          <Find key={f.id} find={f} open={open === f.id} onToggle={() => toggle(f.id)} />
-        ))}
-        <p className={`${styles.scrap} ${styles.scrapC}`} data-speed="-0.6" aria-hidden="true">
-          {scraps[2]}
-        </p>
-        <p className={`${styles.scrap} ${styles.scrapD}`} data-speed="-0.4" aria-hidden="true">
-          {scraps[3]}
-        </p>
-        <p className={`${styles.scrap} ${styles.scrapF}`} data-speed="-0.55" aria-hidden="true">
-          {scraps[5]}
-        </p>
+        <div className={styles.findsRow} data-flow>
+          {findList(["creature-1", "lantern", "door-2", "creature-2"])}
+        </div>
+        <div className={styles.scraps} data-flow>
+          <p className={`${styles.scrap} ${styles.scrapC}`} data-speed="-0.6" aria-hidden="true">
+            {scraps[2]}
+          </p>
+          <p className={`${styles.scrap} ${styles.scrapD}`} data-speed="-0.4" aria-hidden="true">
+            {scraps[3]}
+          </p>
+          <p className={`${styles.scrap} ${styles.scrapF}`} data-speed="-0.55" aria-hidden="true">
+            {scraps[5]}
+          </p>
+        </div>
         <div className={styles.shroomsL} aria-hidden="true">
           <Mushrooms tone="gold" />
         </div>

@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Caveat, Fraunces, Karla, VT323 } from "next/font/google";
 import SiteNav from "@/components/nav/SiteNav";
 import RelicToast from "@/components/game/RelicToast";
+import DiscoverySheet from "@/components/ui/DiscoverySheet";
 import InkDefs from "@/components/art/InkDefs";
 import { site } from "@/content/site";
 import { motionBootScript } from "@/lib/motionBoot";
@@ -60,6 +61,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {children}
         </div>
         <RelicToast />
+        <DiscoverySheet />
         <div className="grain" aria-hidden="true" />
       </body>
     </html>

@@ -18,6 +18,7 @@ import {
 import { relics } from "@/content/game";
 import { huntCopy } from "@/content/hunt";
 import { hunt, useHunt } from "@/lib/hunt";
+import { discovery, useSheetMode } from "@/lib/discovery";
 import Threshold from "@/components/hunt/Threshold";
 import { game, useGame } from "@/lib/gameStore";
 import { sfx } from "@/lib/audio";
@@ -152,7 +153,22 @@ export default function SceneRoom({ reduced, onDescend }: Props) {
     window.setTimeout(() => delete scene.dataset.flash, 1400);
   };
 
-  const quip = (id: string, text: string) => setBubble({ id, text, n: ++bubbleSeq.current });
+  const sheetMode = useSheetMode();
+  /** An object’s reaction: the shared bottom sheet on phones/tablets, a bubble beside it on desktop. */
+  const quip = (id: string, text: string) => {
+    if (sheetMode) {
+      const obj = roomObjects.find((o) => o.id === id);
+      discovery.show({
+        key: `room:${id}:${++bubbleSeq.current}`,
+        title: obj ? obj.label.split(":")[0] : "",
+        lines: [text],
+        anchor: document.querySelector<HTMLElement>(`#room-scene [data-id="${id}"]`),
+      });
+      setBubble(null);
+      return;
+    }
+    setBubble({ id, text, n: ++bubbleSeq.current });
+  };
 
   const act = (obj: RoomObject) => {
     const a = obj.action;
@@ -189,7 +205,8 @@ export default function SceneRoom({ reduced, onDescend }: Props) {
       setSwinging(true);
       window.setTimeout(() => setSwinging(false), 1600);
       const fresh = !state.found[a.relic];
-      quip(obj.id, fresh ? a.quip : "The clock has nothing left to give. It’s still wrong, though.");
+      // On phones a fresh find is announced by the relic message itself (one response at a time).
+      if (!(fresh && sheetMode)) quip(obj.id, fresh ? a.quip : "The clock has nothing left to give. It’s still wrong, though.");
       if (fresh) window.setTimeout(() => game.findRelic(a.relic), reduced ? 0 : 700);
     }
   };

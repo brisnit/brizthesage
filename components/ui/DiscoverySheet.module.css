@@ -1,0 +1,75 @@
+/* Above all scenery (and the relic toast); native <dialog>s sit in the top layer above it. */
+.region {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 140;
+  pointer-events: none;
+}
+.sheet {
+  pointer-events: auto;
+  margin: 0 max(8px, env(safe-area-inset-right)) max(8px, env(safe-area-inset-bottom)) max(8px, env(safe-area-inset-left));
+  max-height: min(58svh, 58dvh, 520px);
+  display: flex;
+  flex-direction: column;
+  border: 2.5px solid var(--line);
+  border-radius: 20px 22px 18px 24px / 20px 18px 22px 20px;
+  background: radial-gradient(120% 90% at 30% 20%, #f7eed8 0%, var(--parchment) 50%, #e6d4ad 100%);
+  color: var(--plum-950);
+  box-shadow: 0 -10px 40px rgba(8, 4, 14, 0.5), var(--shadow-ink);
+  animation: rise 0.32s var(--ease-out);
+}
+@keyframes rise {
+  from {
+    transform: translateY(24px);
+    opacity: 0;
+  }
+}
+.head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 12px 4px 18px;
+}
+.title {
+  padding-top: 8px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--coral-600);
+}
+.close {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 2px solid currentColor;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+}
+.body {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 2px 18px 18px;
+  font-family: var(--font-hand);
+  font-size: 1.4rem;
+  line-height: 1.25;
+}
+.body p + p {
+  margin-top: 8px;
+}
+.stamp {
+  margin-bottom: 6px;
+  color: var(--coral-600);
+}
+@media (min-width: 600px) {
+  .sheet {
+    max-width: 560px;
+    margin-inline: auto;
+  }
+}

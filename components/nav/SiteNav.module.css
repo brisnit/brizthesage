@@ -8,7 +8,9 @@
   justify-content: space-between;
   gap: 16px;
   padding: env(safe-area-inset-top, 0px) clamp(12px, 3vw, 32px) 0;
-  background: linear-gradient(to bottom, rgba(18, 10, 25, 0.88) 0%, rgba(18, 10, 25, 0.55) 70%, rgba(18, 10, 25, 0) 100%);
+  /* A solid band, so content scrolling underneath never competes with the header; a short fade below. */
+  background: rgba(18, 10, 25, 0.94);
+  box-shadow: 0 10px 14px -6px rgba(18, 10, 25, 0.8);
   pointer-events: none;
 }
 .bar > * {

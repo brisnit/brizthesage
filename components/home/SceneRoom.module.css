@@ -1075,3 +1075,8 @@
     width: 13%;
   }
 }
+
+/* Desktop: the object that is speaking rises above the rest of the room, so neighbours never cover its bubble. */
+.obj:has(.bubble) {
+  z-index: 300 !important;
+}

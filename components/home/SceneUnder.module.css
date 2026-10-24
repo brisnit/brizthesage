@@ -229,8 +229,15 @@
   white-space: nowrap;
 }
 
+/* On desktop the wrappers vanish and scraps/finds are placed in the stratum as before. */
+.scraps,
+.findsRow {
+  display: contents;
+}
 .scrap {
+  position: absolute;
   z-index: 3;
+  max-width: 18rem;
   padding: 10px 16px 12px;
   background: linear-gradient(170deg, #f7eed8, #e2d0a8);
   color: var(--plum-950);
@@ -307,6 +314,7 @@
 
 /* ---------- Discoveries ---------- */
 .find {
+  position: absolute;
   left: calc(var(--x) * 1%);
   top: calc(var(--y) * 1%);
   width: calc(var(--w) * 1%);
@@ -332,6 +340,18 @@
 .findButton:focus-visible {
   transform: scale(1.06) rotate(-2deg);
   filter: drop-shadow(0 0 10px rgba(255, 217, 138, 0.7));
+}
+.find[data-open="true"] {
+  z-index: 30;
+}
+.find[data-edge="left"] .tidbit {
+  left: 0;
+  translate: 0 0;
+}
+.find[data-edge="right"] .tidbit {
+  left: auto;
+  right: 0;
+  translate: 0 0;
 }
 .tidbit {
   position: absolute;
@@ -514,48 +534,94 @@
 }
 
 /* ---------- Phones ---------- */
+/* ---------- Phones: each stratum is a column; readable things take real space,
+   scenery sits behind them in the side margins. ---------- */
 @media (max-width: 699px) {
-  .find {
-    left: calc(var(--mx) * 1%);
-    top: calc(var(--my) * 1%);
-    width: calc(var(--mw) * 1%);
+  .block:not(.sanctuary) {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    min-height: 0;
+    padding: 72px 16px 88px;
+  }
+  .block > [data-flow] {
+    position: relative;
+    inset: auto;
+    translate: none;
+    z-index: 3;
+  }
+  .entryText {
+    padding-top: 16svh;
+  }
+  .depthSide {
+    align-self: flex-start;
+  }
+  .depthRight {
+    align-self: flex-end;
   }
   .records {
-    left: 30%;
-    top: 14%;
-    width: 68vw;
+    align-self: center;
+    width: min(78vw, 340px);
+    margin-top: 56px;
   }
   .relicRecord {
     left: 40%;
-    top: -28%;
+    top: -34%;
   }
-  .scrapA {
-    left: 6%;
-    top: 74%;
+
+  /* Discoveries: a grid of comfortably sized objects (their responses open in the sheet). */
+  .findsRow {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 30px 16px;
+    align-items: end;
+    justify-items: center;
   }
-  .scrapB {
-    left: 10%;
-    top: 84%;
+  .findsRow .find {
+    position: relative;
+    left: auto;
+    top: auto;
+    width: 100%;
+    max-width: var(--mobile-w, 96px);
+    min-width: 64px;
   }
-  .scrapC {
-    right: 6%;
-    top: 30%;
+  .find[data-kind="door"] {
+    --mobile-w: 78px;
   }
-  .scrapD {
-    left: 30%;
-    top: 88%;
+  .find[data-kind="creature"],
+  .find[data-id="mushrooms"] {
+    --mobile-w: 140px;
   }
-  .scrapE {
-    right: 4%;
-    top: 58%;
+  .find[data-id="lantern"],
+  .find[data-id="teacup"] {
+    --mobile-w: 90px;
   }
-  .scrapF {
-    left: 4%;
-    top: 40%;
+  .find[data-id="mushrooms"] {
+    grid-column: 1 / -1;
   }
-  .shroomsR,
-  .shroomsL {
-    width: 36vw;
+
+  /* Scraps wrap naturally, grow in height, and keep their rotated corners on screen. */
+  .scraps {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    gap: 24px 14px;
+    padding: 6px 10px;
+  }
+  .scraps .scrap {
+    position: relative;
+    inset: auto;
+    max-width: min(15rem, calc(100% - 24px));
+    rotate: -3deg;
+  }
+  .scraps .scrap:nth-child(even) {
+    rotate: 4deg;
+  }
+
+  /* Scenery: behind content, in the margins, no taps. */
+  .block > :not([data-flow]) {
+    z-index: 0;
+    pointer-events: none;
   }
   .rootsL {
     width: 70vw;
@@ -564,33 +630,57 @@
     width: 60vw;
   }
   .artifact {
-    width: 16vw;
+    width: 13vw;
+    opacity: 0.75;
   }
-  .artFish {
-    width: 22vw;
-    left: 4%;
-    top: 52%;
+  .artBone {
+    left: auto;
+    right: 2%;
+    top: 56%;
+  }
+  .artGear {
+    left: 2%;
+    top: auto;
+    bottom: 6%;
+  }
+  .artMic {
+    left: 1%;
+    top: 3%;
+  }
+  .artFish,
+  .artBottle,
+  .artWatch {
+    display: none;
   }
   .artCassette {
-    left: 76%;
-    top: 84%;
+    left: auto;
+    right: 2%;
+    top: auto;
+    bottom: 3%;
   }
   .artHeadphones {
-    left: 70%;
-    top: 4%;
+    left: 2%;
+    top: 3%;
   }
-  .artWatch {
-    left: 78%;
-    top: 26%;
-  }
+  .shroomsEntry,
   .shroomsMid {
-    left: 36%;
-    top: 38%;
-    width: 28vw;
+    display: none;
   }
-  .shroomsEntry {
-    width: 30vw;
-    right: 6%;
+  .shroomsR {
+    right: 0;
+    bottom: 2%;
+    width: 24vw;
+  }
+  .shroomsL {
+    left: 0;
+    bottom: 2%;
+    width: 24vw;
+  }
+  .stonesFar,
+  .stonesMid,
+  .stonesLow {
+    width: 70vw;
+    opacity: 0.35;
   }
   .chamberSkeleton {
     right: 2vw;
@@ -599,8 +689,5 @@
   }
   .chamberText {
     margin-bottom: max(30svh, 210px);
-  }
-  .tidbit {
-    font-size: 1.15rem;
   }
 }

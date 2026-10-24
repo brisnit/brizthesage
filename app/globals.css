@@ -64,6 +64,9 @@
 
 html {
   -webkit-text-size-adjust: 100%;
+  /* Focus moves, anchors and scrollIntoView land below the fixed header and above an open discovery sheet. */
+  scroll-padding-top: calc(var(--nav-h) + 16px);
+  scroll-padding-bottom: calc(var(--sheet-h, 0px) + 12px);
   background: var(--bg);
 }
 
@@ -370,4 +373,11 @@ html[data-motion="reduced"] *::after {
   html.printing-keepsake .grain {
     display: none;
   }
+}
+
+/* The object whose discovery is open in the bottom sheet stays identifiable. */
+[data-discovering] {
+  outline: 3px dashed var(--ochre-300);
+  outline-offset: 6px;
+  border-radius: 10px;
 }
